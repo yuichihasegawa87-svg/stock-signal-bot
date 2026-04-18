@@ -1,12 +1,11 @@
 """
-notifier.py
-LINE Notify を使ってiPhoneに通知を送る
+notifier.py v4
+Discord Webhook を使ってiPhoneに通知を送る
 
-LINE Notifyの仕様:
-- 1メッセージの上限: 1000文字
-- 1時間あたりの送信上限: 1000回（個人利用では問題なし）
-- 画像添付も可能（今回はテキストのみ）
-- 認証: トークン1つだけ。SMTPもパスワード設定も不要。
+Discord Webhookの仕様:
+- 1メッセージの上限: 2000文字
+- 認証: WebhookのURLを1つ登録するだけ。トークンもパスワードも不要。
+- Embedsという見やすいカード形式で表示できる
 """
 
 import requests
@@ -14,97 +13,133 @@ import os
 from datetime import datetime
 
 
-LINE_NOTIFY_URL = "https://notify-api.line.me/api/notify"
-# LINEの1メッセージ上限は1000文字。超える場合は分割して送信する。
-MAX_CHARS = 1000
+DISCORD_MAX_CHARS = 2000
 
 
-def _send_line(message: str) -> bool:
+def _send_discord(content: str = None, embeds: list = None) -> bool:
     """
-    LINE Notifyに1件のメッセージを送信する内部関数
+    Discord WebhookにメッセージまたはEmbedsを送信する内部関数
     """
-    token = os.environ.get("LINE_NOTIFY_TOKEN", "")
-    if not token:
-        print("LINE_NOTIFY_TOKEN が設定されていません")
+    webhook_url = os.environ.get("DISCORD_WEBHOOK_URL", "")
+    if not webhook_url:
+        print("DISCORD_WEBHOOK_URL が設定されていません")
         return False
 
-    headers = {"Authorization": f"Bearer {token}"}
-    data    = {"message": message}
+    payload = {}
+    if content:
+        payload["content"] = content[:DISCORD_MAX_CHARS]
+    if embeds:
+        payload["embeds"] = embeds
 
     try:
-        res = requests.post(LINE_NOTIFY_URL, headers=headers, data=data, timeout=10)
-        if res.status_code == 200:
+        res = requests.post(webhook_url, json=payload, timeout=10)
+        if res.status_code in (200, 204):
             return True
         else:
-            print(f"LINE送信エラー: {res.status_code} {res.text}")
+            print(f"Discord送信エラー: {res.status_code} {res.text}")
             return False
     except Exception as e:
-        print(f"LINE送信例外: {e}")
+        print(f"Discord送信例外: {e}")
         return False
 
 
-def send_line_messages(messages: list[str]) -> bool:
+def send_discord_messages(payloads: list) -> bool:
     """
-    複数メッセージをまとめてLINEに送信する
-    1000文字を超える場合は自動で分割する
+    複数のpayload（contentまたはembeds）をDiscordに順番に送信する
+    payloads = [
+        {"content": "テキスト"},
+        {"embeds": [...]},
+        ...
+    ]
     """
     success = True
-    for msg in messages:
-        # 1000文字を超える場合は分割
-        if len(msg) > MAX_CHARS:
-            chunks = [msg[i:i+MAX_CHARS] for i in range(0, len(msg), MAX_CHARS)]
-            for chunk in chunks:
-                if not _send_line(chunk):
-                    success = False
-        else:
-            if not _send_line(msg):
-                success = False
+    for p in payloads:
+        result = _send_discord(
+            content=p.get("content"),
+            embeds=p.get("embeds")
+        )
+        if not result:
+            success = False
     return success
+
+
+# ============================================================
+# 色の定数（Discord Embedのサイドバー色）
+# ============================================================
+COLOR_GREEN  = 0x00C851  # 強気・強化
+COLOR_YELLOW = 0xFFBB33  # 中立・弱体化
+COLOR_RED    = 0xFF4444  # 弱気・撤退
+COLOR_BLUE   = 0x33B5E5  # 情報
 
 
 # ============================================================
 # 朝のシグナル通知
 # ============================================================
 
-def build_morning_messages(candidates: list, market_ctx: dict) -> list[str]:
+def build_morning_payloads(candidates: list, market_ctx: dict) -> list:
     """
-    朝のシグナルをLINEメッセージのリストに変換する
-    銘柄1つにつき1メッセージ（見やすくするため）
+    朝のシグナルをDiscord送信用payloadのリストに変換する
     """
-    today = datetime.now().strftime("%m/%d")
+    today = datetime.now().strftime("%Y/%m/%d")
     bias  = market_ctx.get("market_bias", "中立")
-    bias_emoji = {"強気": "🟢", "中立": "🟡", "弱気": "🔴"}.get(bias, "🟡")
     ms    = market_ctx.get("market_score", 0)
     nk    = market_ctx.get("nikkei", {})
     fx    = market_ctx.get("usdjpy", {})
     sp    = market_ctx.get("sp500", {})
+    nq    = market_ctx.get("nasdaq", {})
+
+    bias_emoji = {"強気": "🟢", "中立": "🟡", "弱気": "🔴"}.get(bias, "🟡")
+    color = {"強気": COLOR_GREEN, "中立": COLOR_YELLOW, "弱気": COLOR_RED}.get(bias, COLOR_YELLOW)
 
     def fmt(v):
         return f"{'+'if v>=0 else ''}{v:.2f}%"
 
-    messages = []
+    payloads = []
 
-    # ── メッセージ①：市場環境サマリー ──
-    header = (
-        f"\n【株シグナル {today} 朝8:00】\n"
-        f"━━━━━━━━━━━━\n"
-        f"市場: {bias_emoji}{bias}（{ms}/40点）\n"
-        f"日経: {nk.get('price',0):,.0f}円 {fmt(nk.get('change_pct',0))}\n"
-        f"ドル円: {fx.get('price',0):.1f}円 {fmt(fx.get('change_pct',0))}\n"
-        f"SP500: {sp.get('price',0):,.0f} {fmt(sp.get('change_pct',0))}\n"
-    )
+    # ── Embed①：市場環境サマリー ──
+    market_embed = {
+        "title": f"📈 株シグナル {today} 朝8:00",
+        "color": color,
+        "fields": [
+            {
+                "name": f"市場環境 {bias_emoji} {bias}",
+                "value": (
+                    f"スコア: {ms}/40点\n"
+                    f"日経225:  `{nk.get('price',0):,.0f}円`  {fmt(nk.get('change_pct',0))}\n"
+                    f"ドル円:   `{fx.get('price',0):.1f}円`  {fmt(fx.get('change_pct',0))}\n"
+                    f"S&P500:   `{sp.get('price',0):,.0f}`  {fmt(sp.get('change_pct',0))}\n"
+                    f"Nasdaq:   `{nq.get('price',0):,.0f}`  {fmt(nq.get('change_pct',0))}"
+                ),
+                "inline": False
+            }
+        ],
+        "footer": {"text": "10:30前場・13:30後場に状況変化を再通知します"}
+    }
+
     if market_ctx.get("has_major_event"):
-        header += "⚠️ 本日重要指標あり\n"
+        market_embed["fields"].append({
+            "name": "⚠️ 注意",
+            "value": "本日は重要経済指標の発表予定があります",
+            "inline": False
+        })
 
     if not candidates:
-        header += "\n本日の推奨銘柄なし\n→ 様子見を推奨します"
-        messages.append(header)
-        return messages
+        market_embed["fields"].append({
+            "name": "本日の推奨銘柄",
+            "value": "条件を満たす銘柄なし\n**→ 本日は様子見を推奨します**",
+            "inline": False
+        })
+        payloads.append({"embeds": [market_embed]})
+        return payloads
 
-    header += f"\n注目銘柄: {len(candidates)}件 ↓"
-    messages.append(header)
+    market_embed["fields"].append({
+        "name": "本日の注目銘柄",
+        "value": f"{len(candidates)}件が条件を満たしました ↓",
+        "inline": False
+    })
+    payloads.append({"embeds": [market_embed]})
 
-    # ── メッセージ②以降：銘柄1件ずつ ──
+    # ── Embed②以降：銘柄1件ずつ ──
     medals = ["🥇", "🥈", "🥉", "4️⃣", "5️⃣"]
     for i, c in enumerate(candidates):
         medal = medals[i] if i < len(medals) else f"{i+1}."
@@ -115,57 +150,72 @@ def build_morning_messages(candidates: list, market_ctx: dict) -> list[str]:
 
         reasons = []
         if c.get("volume_ratio", 0) >= 2.0:
-            reasons.append(f"出来高{c['volume_ratio']:.1f}倍")
+            reasons.append(f"出来高{c['volume_ratio']:.1f}倍急増")
         if c.get("price_change_pct", 0) >= 1.0:
-            reasons.append(f"+{c['price_change_pct']:.1f}%上昇")
+            reasons.append(f"前日比+{c['price_change_pct']:.1f}%")
         if ind.get("macd_golden_cross"):
             reasons.append("MACD GC")
         if 50 <= ind.get("rsi", 0) <= 70:
             reasons.append(f"RSI{ind['rsi']:.0f}")
         if ind.get("perfect_order"):
-            reasons.append("完全順列")
+            reasons.append("移動平均完全順列")
 
-        msg = (
-            f"\n{medal} {c['name']}（{c['code']}）\n"
-            f"信頼度: {score:.0f}% [{bar}]\n"
-            f"前日終値: {c['close']:,.0f}円\n"
-            f"前日比: +{c['price_change_pct']:.1f}%\n"
-            f"根拠: {' / '.join(reasons)}\n"
-            f"━━━━━━━━━━━━\n"
-            f"▶ 参考エントリー\n"
-            f"  {tgt.get('entry',0):,.0f}円\n"
-            f"✅ 利確目標 (+1.5%)\n"
-            f"  {tgt.get('target',0):,.0f}円\n"
-            f"🛑 損切ライン (-0.7%)\n"
-            f"  {tgt.get('stop',0):,.0f}円\n"
-            f"RR比: {tgt.get('rr_ratio','-')}\n"
-        )
-        messages.append(msg)
+        embed = {
+            "title": f"{medal} {c['name']}（{c['code']}）",
+            "description": f"**信頼度: {score:.0f}%**  `{bar}`",
+            "color": COLOR_GREEN if score >= 70 else COLOR_YELLOW,
+            "fields": [
+                {
+                    "name": "基本情報",
+                    "value": (
+                        f"セクター: {c.get('sector','')}\n"
+                        f"前日終値: `{c['close']:,.0f}円`\n"
+                        f"前日比: `+{c['price_change_pct']:.1f}%`\n"
+                        f"出来高比: `{c['volume_ratio']:.1f}倍`"
+                    ),
+                    "inline": True
+                },
+                {
+                    "name": "参考価格",
+                    "value": (
+                        f"▶ エントリー: `{tgt.get('entry',0):,.0f}円`\n"
+                        f"✅ 利確目標: `{tgt.get('target',0):,.0f}円` (+1.5%)\n"
+                        f"🛑 損切ライン: `{tgt.get('stop',0):,.0f}円` (-0.7%)\n"
+                        f"RR比: `{tgt.get('rr_ratio','-')}`"
+                    ),
+                    "inline": True
+                },
+                {
+                    "name": "判断根拠",
+                    "value": " / ".join(reasons) if reasons else "複合条件通過",
+                    "inline": False
+                }
+            ]
+        }
+        payloads.append({"embeds": [embed]})
 
-    # ── 最後にフッター ──
-    messages.append(
-        "\n⚠️ 最終判断はご自身で\n"
-        "📊 10:30前場・13:30後場\n"
-        "　に状況変化を再通知します"
-    )
-    return messages
+    # フッター
+    payloads.append({
+        "content": "⚠️ 参考情報です。最終判断はご自身でお願いします。"
+    })
+    return payloads
 
 
 # ============================================================
 # 前場・後場の監視通知
 # ============================================================
 
-def build_monitor_messages(
+def build_monitor_payloads(
     mode: str,
     changed_candidates: list,
     new_candidates: list,
     market_ctx: dict
-) -> tuple[list[str], bool]:
+) -> tuple[list, bool]:
     """
-    前場・後場の監視結果をLINEメッセージに変換する
+    前場・後場の監視結果をDiscord送信用payloadに変換する
 
     Returns:
-        (メッセージリスト, 送信すべきかどうか)
+        (payloadリスト, 送信すべきかどうか)
     """
     from monitor import SIGNAL_STRENGTHEN, SIGNAL_WEAKEN, SIGNAL_EXIT
 
@@ -177,69 +227,102 @@ def build_monitor_messages(
     # 後場は常に送信、前場は変化があった場合のみ
     should_send = (mode == "afternoon") or bool(changed_candidates or new_candidates)
     if not should_send:
-        print("前場：変化なし → LINE通知スキップ")
+        print("前場：変化なし → Discord通知スキップ")
         return [], False
 
-    messages = []
+    payloads = []
 
     # ── ヘッダー ──
-    header = (
-        f"\n【{label} {now}】\n"
-        f"市場: {bias_emoji}{bias}\n"
-        f"━━━━━━━━━━━━"
-    )
-    messages.append(header)
+    header_embed = {
+        "title": f"🔍 {label} {now}",
+        "color": COLOR_BLUE,
+        "description": f"市場: {bias_emoji} {bias}"
+    }
+    payloads.append({"embeds": [header_embed]})
 
     # ── 朝の銘柄の状況変化 ──
     if changed_candidates:
         for c in changed_candidates:
             ct = c["change_type"]
             if ct == SIGNAL_STRENGTHEN:
-                icon = "📈 強化シグナル\n→ 継続/追加エントリー推奨"
+                icon  = "📈 強化シグナル"
+                color = COLOR_GREEN
+                msg   = "継続/追加エントリー推奨"
             elif ct == SIGNAL_WEAKEN:
-                icon = "⚠️ 弱体化シグナル\n→ 利確を検討"
+                icon  = "⚠️ 弱体化シグナル"
+                color = COLOR_YELLOW
+                msg   = "利確を検討"
             else:
-                icon = "🚨 撤退シグナル\n→ 損切り/見送り推奨"
+                icon  = "🚨 撤退シグナル"
+                color = COLOR_RED
+                msg   = "損切り/見送りを推奨"
 
             diff     = c["current_close"] - c["entry_price"]
             diff_pct = diff / c["entry_price"] * 100
 
-            msg = (
-                f"\n{icon}\n"
-                f"{c['name']}（{c['code']}）\n"
-                f"現在値: {c['current_close']:,.0f}円\n"
-                f"朝比: {'+'if diff>=0 else ''}{diff_pct:.1f}%\n"
-            )
-            for reason in c["change_reasons"]:
-                msg += f"→ {reason}\n"
-            msg += (
-                f"利確: {c['target_price']:,.0f}円\n"
-                f"損切: {c['stop_price']:,.0f}円"
-            )
-            messages.append(msg)
+            embed = {
+                "title": f"{icon}：{c['name']}（{c['code']}）",
+                "description": f"**→ {msg}**",
+                "color": color,
+                "fields": [
+                    {
+                        "name": "価格状況",
+                        "value": (
+                            f"現在値: `{c['current_close']:,.0f}円`\n"
+                            f"朝比: `{'+'if diff>=0 else ''}{diff_pct:.1f}%`\n"
+                            f"利確目標: `{c['target_price']:,.0f}円`\n"
+                            f"損切ライン: `{c['stop_price']:,.0f}円`"
+                        ),
+                        "inline": True
+                    },
+                    {
+                        "name": "変化の理由",
+                        "value": "\n".join([f"→ {r}" for r in c["change_reasons"]]),
+                        "inline": True
+                    }
+                ]
+            }
+            payloads.append({"embeds": [embed]})
     else:
         if mode == "midmorning":
-            messages.append("\n朝の銘柄：変化なし\nホールド継続")
+            payloads.append({
+                "content": "✅ 朝の銘柄：変化なし（ホールド継続）"
+            })
 
     # ── 後場の新規銘柄 ──
     if new_candidates:
-        messages.append("\n🆕 後場の新規候補銘柄")
+        payloads.append({"content": "🆕 **後場の新規候補銘柄**"})
         medals = ["🥇", "🥈", "🥉"]
         for i, c in enumerate(new_candidates[:3]):
             medal = medals[i] if i < len(medals) else "▶"
             tgt   = c.get("targets", {})
-            msg = (
-                f"\n{medal} {c['name']}（{c['code']}）\n"
-                f"信頼度: {c['score']:.0f}%\n"
-                f"前日比: +{c['price_change_pct']:.1f}%\n"
-                f"出来高: {c['volume_ratio']:.1f}倍\n"
-                f"エントリー: {tgt.get('entry',0):,.0f}円\n"
-                f"利確: {tgt.get('target',0):,.0f}円\n"
-                f"損切: {tgt.get('stop',0):,.0f}円"
-            )
-            messages.append(msg)
+            embed = {
+                "title": f"{medal} {c['name']}（{c['code']}）",
+                "description": f"信頼度: **{c['score']:.0f}%**",
+                "color": COLOR_GREEN,
+                "fields": [
+                    {
+                        "name": "情報",
+                        "value": (
+                            f"前日比: `+{c['price_change_pct']:.1f}%`\n"
+                            f"出来高: `{c['volume_ratio']:.1f}倍`"
+                        ),
+                        "inline": True
+                    },
+                    {
+                        "name": "参考価格",
+                        "value": (
+                            f"エントリー: `{tgt.get('entry',0):,.0f}円`\n"
+                            f"利確: `{tgt.get('target',0):,.0f}円`\n"
+                            f"損切: `{tgt.get('stop',0):,.0f}円`"
+                        ),
+                        "inline": True
+                    }
+                ]
+            }
+            payloads.append({"embeds": [embed]})
     elif mode == "afternoon":
-        messages.append("\n後場の新規候補：なし")
+        payloads.append({"content": "後場の新規候補：条件を満たす銘柄なし"})
 
-    messages.append("\n⚠️ 最終判断はご自身で")
-    return messages, True
+    payloads.append({"content": "⚠️ 参考情報です。最終判断はご自身でお願いします。"})
+    return payloads, True
