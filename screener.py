@@ -16,18 +16,44 @@ import time
 
 def get_jquants_access_token() -> str:
     """
-    リフレッシュトークンからアクセストークンを取得
-    （アクセストークンは24時間有効）
-    """
-    refresh_token = os.environ.get("JQUANTS_REFRESH_TOKEN", "")
-    if not refresh_token:
-        raise ValueError("JQUANTS_REFRESH_TOKEN が設定されていません")
+    メールアドレス＋パスワード → リフレッシュトークン → IDトークン
+    の2ステップで毎回自動取得する。
 
-    url = "https://api.jquants.com/v1/token/auth_refresh"
-    params = {"refreshtoken": refresh_token}
-    res = requests.post(url, params=params, timeout=15)
-    res.raise_for_status()
-    return res.json()["idToken"]
+    これによりリフレッシュトークンを手動で週次更新する必要がなくなる。
+    SecretsにはJQUANTS_EMAILとJQUANTS_PASSWORDを登録する。
+    """
+    email    = os.environ.get("JQUANTS_EMAIL", "")
+    password = os.environ.get("JQUANTS_PASSWORD", "")
+
+    if not email or not password:
+        raise ValueError(
+            "JQUANTS_EMAIL または JQUANTS_PASSWORD が設定されていません。"
+            "GitHubのSecretsにこの2つを登録してください。"
+        )
+
+    # ステップ1：メール＋パスワードでリフレッシュトークンを取得
+    res1 = requests.post(
+        "https://api.jquants.com/v1/token/auth_user",
+        json={"mailaddress": email, "password": password},
+        timeout=15
+    )
+    res1.raise_for_status()
+    refresh_token = res1.json().get("refreshToken", "")
+    if not refresh_token:
+        raise ValueError("リフレッシュトークンの取得に失敗しました。メールアドレスとパスワードを確認してください。")
+
+    # ステップ2：リフレッシュトークンでIDトークン（アクセストークン）を取得
+    res2 = requests.post(
+        "https://api.jquants.com/v1/token/auth_refresh",
+        params={"refreshtoken": refresh_token},
+        timeout=15
+    )
+    res2.raise_for_status()
+    id_token = res2.json().get("idToken", "")
+    if not id_token:
+        raise ValueError("IDトークンの取得に失敗しました。")
+
+    return id_token
 
 
 # ============================================================
