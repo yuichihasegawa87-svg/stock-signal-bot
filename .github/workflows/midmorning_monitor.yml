@@ -23,7 +23,8 @@ jobs:
           restore-keys: morning-signal-
       - name: 前場レビューを実行してDiscordに通知
         env:
-          JQUANTS_REFRESH_TOKEN: ${{ secrets.JQUANTS_REFRESH_TOKEN }}
+          JQUANTS_EMAIL: ${{ secrets.JQUANTS_EMAIL }}
+          JQUANTS_PASSWORD: ${{ secrets.JQUANTS_PASSWORD }}
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           FINNHUB_API_KEY: ${{ secrets.FINNHUB_API_KEY }}
         run: python main.py --mode midmorning --input morning_result.json
