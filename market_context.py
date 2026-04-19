@@ -26,10 +26,10 @@ def get_market_context() -> dict:
     context = {}
     score = 0
 
-    # ① 日経225先物（^N225F or ^N225で代用）
+    # ① 日経225（period=5dで取得し直近2営業日を使う。週末・祝日対策）
     try:
         nk = yf.Ticker("^N225")
-        hist = nk.history(period="2d")
+        hist = nk.history(period="5d")
         if len(hist) >= 2:
             prev_close = hist["Close"].iloc[-2]
             last_close = hist["Close"].iloc[-1]
@@ -46,10 +46,10 @@ def get_market_context() -> dict:
         print(f"日経取得エラー: {e}")
         context["nikkei"] = {"price": 0, "change_pct": 0}
 
-    # ② ドル円
+    # ② ドル円（period=5d）
     try:
         usdjpy = yf.Ticker("JPY=X")
-        hist = usdjpy.history(period="2d")
+        hist = usdjpy.history(period="5d")
         if len(hist) >= 2:
             prev = hist["Close"].iloc[-2]
             last = hist["Close"].iloc[-1]
@@ -67,10 +67,10 @@ def get_market_context() -> dict:
         print(f"ドル円取得エラー: {e}")
         context["usdjpy"] = {"price": 0, "change_pct": 0}
 
-    # ③ S&P500（NY市場）
+    # ③ S&P500（period=5d）
     try:
         sp = yf.Ticker("^GSPC")
-        hist = sp.history(period="2d")
+        hist = sp.history(period="5d")
         if len(hist) >= 2:
             prev = hist["Close"].iloc[-2]
             last = hist["Close"].iloc[-1]
@@ -87,10 +87,10 @@ def get_market_context() -> dict:
         print(f"SP500取得エラー: {e}")
         context["sp500"] = {"price": 0, "change_pct": 0}
 
-    # ④ ナスダック
+    # ④ ナスダック（period=5d）
     try:
         nq = yf.Ticker("^IXIC")
-        hist = nq.history(period="2d")
+        hist = nq.history(period="5d")
         if len(hist) >= 2:
             prev = hist["Close"].iloc[-2]
             last = hist["Close"].iloc[-1]
