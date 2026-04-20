@@ -1,14 +1,16 @@
 """
-main.py v5
+main.py v5.1
 Discord Webhook通知版
 
 --mode morning    : 朝8時のシグナル生成＆Discord通知
 --mode midmorning : 前場10:30の監視＆Discord通知（変化ありのみ）
 --mode afternoon  : 後場13:30のシグナル更新＆Discord通知
 
-v5変更点:
-  - screener.py が yfinance ベースになったため token を screen_candidates に渡さない
-  - monitor.py の get_daily_quotes も yfinance 経由（token は形式的に渡すのみ）
+v5.1変更点:
+  - 見送り判定を「弱気 + has_major_event」から
+    「弱気 + event_impact == HIGH」に変更
+    → 日本株への影響が大きい指標のある日のみ見送りとなる
+    → カナダCPI等の影響軽微な指標では見送りにならない
 """
 
 import argparse
@@ -34,7 +36,6 @@ SCREEN_TOP_N   = 30
 
 
 def run_screening(market_ctx: dict) -> list:
-    # v5: token不要。screen_candidates() はwatchlistからyfinanceで取得
     candidates_df = screen_candidates(top_n=SCREEN_TOP_N)
     if candidates_df.empty:
         return []
@@ -74,20 +75,24 @@ def main():
 
     market_ctx = get_market_context()
     print(f"市場バイアス: {market_ctx['market_bias']} ({market_ctx['market_score']}/40)")
+    print(f"経済指標影響度: {market_ctx.get('event_impact', 'NONE')}")
 
-    # v5: token は monitor.py の後方互換用にのみ使う（実質不要）
     token = get_jquants_access_token()
 
     # ── 朝モード ──
     if args.mode == "morning":
 
-        if market_ctx["market_bias"] == "弱気" and market_ctx.get("has_major_event"):
+        # 見送り条件：弱気相場 かつ 日本株への影響がHIGHな指標がある日のみ
+        # MEDIUMは注意喚起のみで銘柄通知は継続する
+        if market_ctx["market_bias"] == "弱気" and market_ctx.get("event_impact") == "HIGH":
             from notifier import build_skip_payloads
             send_discord_messages(build_skip_payloads(market_ctx))
             with open("morning_result.json", "w", encoding="utf-8") as f:
-                json.dump({"timestamp": datetime.now().isoformat(),
-                           "market_ctx": market_ctx, "candidates": []}, f,
-                          ensure_ascii=False, indent=2)
+                json.dump({
+                    "timestamp":  datetime.now().isoformat(),
+                    "market_ctx": market_ctx,
+                    "candidates": []
+                }, f, ensure_ascii=False, indent=2)
             return
 
         candidates = run_screening(market_ctx)

@@ -1,10 +1,21 @@
-# 📈 株シグナル Bot v5
+# 📈 株シグナル Bot v5.1
 
 毎朝8時に日本株の注目銘柄をスクリーニングしてDiscordに通知するBotです。
 
 ---
 
-## ✅ v5 での主な変更点
+## ✅ v5 → v5.1 での変更点
+
+| 項目 | v5（旧） | v5.1（新） |
+|------|----------|------------|
+| 経済指標の影響度判定 | あり／なし の2択 | **HIGH／MEDIUM／NONE の3段階** |
+| 通知内容 | 固定文言（FOMC・NFP・日銀会合と毎回同じ表示） | **日本株への影響度＋具体的な指標名を表示** |
+| 見送り判定 | 弱気 + 重要指標があれば見送り | **弱気 + 影響度HIGHの指標がある日のみ見送り** |
+| カナダCPI等の軽微な指標 | 見送り扱いになってしまう | **通知なし（無視）** |
+
+---
+
+## ✅ v4 → v5 での変更点
 
 | 項目 | v4（旧） | v5（新） |
 |------|----------|----------|
@@ -34,7 +45,7 @@ stock-signal-bot/
         ├── morning_signal.yml
         ├── midmorning_monitor.yml
         ├── afternoon_signal.yml
-        └── monthly_watchlist_update.yml   ← v5で追加
+        └── monthly_watchlist_update.yml
 ```
 
 ### 2. GitHub Secrets に登録するもの
@@ -44,14 +55,37 @@ Settings → Secrets and variables → Actions → New repository secret
 | Secret名 | 値 | 必須 |
 |----------|-----|------|
 | `DISCORD_WEBHOOK_URL` | DiscordのWebhook URL | ✅ 必須 |
-| `FINNHUB_API_KEY` | Finnhub API key（無料） | 任意（重要イベント検知用） |
+| `FINNHUB_API_KEY` | Finnhub API key（無料） | 任意（経済指標検知用） |
 
 > **v5から `JQUANTS_API_KEY` は不要です。** 登録済みの場合は削除してOKです。
 
 ### 3. GitHub Actionsの権限設定（watchlist自動更新に必要）
 
-Settings → Actions → General → Workflow permissions  
+Settings → Actions → General → Workflow permissions
 → **「Read and write permissions」を選択して保存**
+
+---
+
+## ⏰ 実行スケジュール
+
+| 時刻 | 内容 |
+|------|------|
+| 毎朝 8:00（月〜金） | 注目50銘柄をスクリーニング → Discord通知 |
+| 毎日 10:30（月〜金） | 朝の銘柄を監視 → 変化あれば通知 |
+| 毎日 13:30（月〜金） | 後場シグナル → 常に通知 |
+| 毎月 2日 7:00 | watchlist.json を自動更新 |
+
+---
+
+## ⚠️ 経済指標の影響度について
+
+FINNHUB_API_KEY を設定している場合、毎朝8時に当日の経済指標を自動確認します。
+
+| 影響度 | 対象指標の例 | Discordの通知 |
+|--------|-------------|---------------|
+| 🔴 HIGH | 米雇用統計(NFP)・FOMC・米CPI・日銀会合 | 弱気相場と重なった場合は**見送り推奨**。通常相場でも⚠️アラート表示 |
+| 🟡 MEDIUM | 米PMI・米小売売上高・ECB・日銀短観 | 注意喚起のみ。銘柄通知は継続 |
+| 通知なし | カナダCPI・英国指標等 | 日本株への影響軽微のため表示しない |
 
 ---
 
@@ -67,41 +101,17 @@ Settings → Actions → General → Workflow permissions
 4. **トレンド性** — 52週高値比 + 移動平均乖離でスコア化
 5. **機関注目度** — 日経225・JPX400・TOPIX100構成銘柄を優先
 
-### セクター構成（デフォルト）
-
-| セクター | 銘柄数 |
-|----------|--------|
-| 自動車 | 5銘柄 |
-| 銀行・金融 | 5銘柄 |
-| 商社 | 5銘柄 |
-| 半導体・電子部品 | 7銘柄 |
-| 医薬品 | 4銘柄 |
-| テクノロジー・通信 | 6銘柄 |
-| 小売・消費財 | 4銘柄 |
-| その他 | 14銘柄 |
-
 ### 月次自動更新の仕組み
 
-`monthly_watchlist_update.yml` が**毎月1日 朝7:00 JST**に自動実行：
+`monthly_watchlist_update.yml` が**毎月2日 朝7:00 JST**に自動実行：
 
 1. デフォルト50銘柄 + 追加候補10銘柄（計60銘柄）を対象に評価
 2. 過去60日の売買代金・トレンド・ボラティリティをスコア化
 3. セクター分散を保ちながら上位50銘柄を選定
 4. `watchlist.json` をリポジトリに自動コミット・プッシュ
 
-**手動でも実行可能：**  
+**手動でも実行可能：**
 Actions → 📋 月次 watchlist 自動更新 → Run workflow
-
----
-
-## ⏰ 実行スケジュール
-
-| 時刻 | 内容 |
-|------|------|
-| 毎朝 8:00 | 注目50銘柄をスクリーニング → Discord通知 |
-| 毎日 10:30 | 朝の銘柄を監視 → 変化あれば通知 |
-| 毎日 13:30 | 後場シグナル → 常に通知 |
-| 毎月 1日 7:00 | watchlist.json を自動更新 |
 
 ---
 
