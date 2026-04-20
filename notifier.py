@@ -326,3 +326,143 @@ def build_monitor_payloads(
 
     payloads.append({"content": "⚠️ 参考情報です。最終判断はご自身でお願いします。"})
     return payloads, True
+
+
+# ============================================================
+# 見送り推奨通知（弱気相場 + 重要経済指標が重なった日）
+# ============================================================
+
+def build_skip_payloads(market_ctx: dict) -> list:
+    """
+    見送り推奨日の詳細通知を生成する。
+    市場の数値・根拠・具体的な行動指針をEmbed形式で送信。
+    """
+    today = datetime.now().strftime("%Y/%m/%d")
+    ms    = market_ctx.get("market_score", 0)
+    nk    = market_ctx.get("nikkei", {})
+    fx    = market_ctx.get("usdjpy", {})
+    sp    = market_ctx.get("sp500", {})
+    nq    = market_ctx.get("nasdaq", {})
+
+    def fmt(v):
+        return f"{'+'if v >= 0 else ''}{v:.2f}%"
+
+    # ── 市場スコアから具体的な弱気根拠を生成 ──
+    weak_reasons = []
+    if nk.get("change_pct", 0) < 0:
+        weak_reasons.append(f"日経225が前日比 {fmt(nk['change_pct'])} と下落")
+    if fx.get("change_pct", 0) < 0:
+        weak_reasons.append(f"ドル円が {fmt(fx['change_pct'])} と円高方向（輸出株に逆風）")
+    if sp.get("change_pct", 0) < 0:
+        weak_reasons.append(f"S&P500が {fmt(sp['change_pct'])} と下落（NY市場の地合い悪化）")
+    if nq.get("change_pct", 0) < 0:
+        weak_reasons.append(f"Nasdaqが {fmt(nq['change_pct'])} と下落（グロース株に売り圧力）")
+    if not weak_reasons:
+        weak_reasons.append("複数指標が弱気シグナルを点灯")
+
+    weak_reasons_str = "\n".join([f"・{r}" for r in weak_reasons])
+
+    payloads = []
+
+    # ── Embed①：見送り宣言（目立つ赤） ──
+    payloads.append({"embeds": [{
+        "title": f"🚫 本日は見送りを推奨  {today}",
+        "description": (
+            "**弱気相場 × 重要経済指標の発表が重なっています。**\n"
+            "この組み合わせは過去データ上、損切りが多発するパターンです。\n"
+            "今日はポジションを持たず、相場を観察する日と割り切ってください。"
+        ),
+        "color": COLOR_RED,
+        "fields": [
+            {
+                "name": "📊 本日の市場スコア",
+                "value": (
+                    f"`{ms}/40点`　← 30点以上で強気、20点未満で弱気\n"
+                    f"日経225:  `{nk.get('price',0):,.0f}円`  {fmt(nk.get('change_pct',0))}\n"
+                    f"ドル円:   `{fx.get('price',0):.1f}円`  {fmt(fx.get('change_pct',0))}\n"
+                    f"S&P500:   `{sp.get('price',0):,.0f}`  {fmt(sp.get('change_pct',0))}\n"
+                    f"Nasdaq:   `{nq.get('price',0):,.0f}`  {fmt(nq.get('change_pct',0))}"
+                ),
+                "inline": False
+            },
+            {
+                "name": "🔴 弱気と判断した根拠",
+                "value": weak_reasons_str,
+                "inline": False
+            },
+            {
+                "name": "⚠️ 重要経済指標の発表あり",
+                "value": (
+                    "本日はFOMC・日銀会合・米雇用統計（NFP）等の\n"
+                    "重大イベントが予定されています。\n"
+                    "発表前後は乱高下が起きやすく、損切りラインを簡単に割ります。"
+                ),
+                "inline": False
+            }
+        ]
+    }]})
+
+    # ── Embed②：見送る理由の解説 ──
+    payloads.append({"embeds": [{
+        "title": "📖 なぜ今日は見送るべきか",
+        "color": COLOR_RED,
+        "fields": [
+            {
+                "name": "① 重要指標発表日の統計的リスク",
+                "value": (
+                    "FOMC・NFP・日銀会合の発表前後30分は\n"
+                    "通常の3〜5倍のボラティリティが発生します。\n"
+                    "損切りラインを瞬時に突き破るケースが多く、\n"
+                    "テクニカル分析が機能しにくい環境です。"
+                ),
+                "inline": False
+            },
+            {
+                "name": "② 弱気相場でのエントリーは「落ちるナイフを掴む」行為",
+                "value": (
+                    "市場全体が下落トレンドのときに個別株を買っても、\n"
+                    "指数の下げに引きずられて上昇シグナルが機能しません。\n"
+                    "強気銘柄でさえ、地合いの悪さに負けて下落するのが現実です。"
+                ),
+                "inline": False
+            },
+            {
+                "name": "③ 見送りもれっきとした「判断」",
+                "value": (
+                    "プロのトレーダーは「今日は動かない」という決断を\n"
+                    "積極的に下します。損失ゼロも立派な成果です。\n"
+                    "資金を守ることが、次のチャンスへの備えになります。"
+                ),
+                "inline": False
+            }
+        ]
+    }]})
+
+    # ── Embed③：今日やるべきこと ──
+    payloads.append({"embeds": [{
+        "title": "✅ 今日やるべきこと",
+        "color": COLOR_BLUE,
+        "fields": [
+            {
+                "name": "相場観察",
+                "value": (
+                    "・発表後の市場の反応を観察する\n"
+                    "・「どの銘柄が下げ渋っているか」をメモしておく\n"
+                    "・強い銘柄は明日以降のウォッチリスト候補になる"
+                ),
+                "inline": False
+            },
+            {
+                "name": "明日への準備",
+                "value": (
+                    "・指標発表後に相場が落ち着けば、明朝のシグナルが有効になる\n"
+                    "・発表内容がポジティブなら、明日の市場スコアが改善する可能性が高い\n"
+                    "・Bot は明朝8時に改めて市場を評価して通知します"
+                ),
+                "inline": False
+            }
+        ],
+        "footer": {"text": "明朝8:00に改めてシグナルを配信します"}
+    }]})
+
+    return payloads

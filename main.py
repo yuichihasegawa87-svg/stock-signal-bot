@@ -82,12 +82,8 @@ def main():
     if args.mode == "morning":
 
         if market_ctx["market_bias"] == "弱気" and market_ctx.get("has_major_event"):
-            send_discord_messages([{
-                "content": (
-                    "⚠️ **本日は見送りを推奨します**\n"
-                    "弱気相場 + 重要経済指標あり\nリスクが高いため様子見を推奨"
-                )
-            }])
+            from notifier import build_skip_payloads
+            send_discord_messages(build_skip_payloads(market_ctx))
             with open("morning_result.json", "w", encoding="utf-8") as f:
                 json.dump({"timestamp": datetime.now().isoformat(),
                            "market_ctx": market_ctx, "candidates": []}, f,
