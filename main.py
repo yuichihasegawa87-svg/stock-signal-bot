@@ -1,10 +1,14 @@
 """
-main.py v4
+main.py v5
 Discord Webhook通知版
 
 --mode morning    : 朝8時のシグナル生成＆Discord通知
 --mode midmorning : 前場10:30の監視＆Discord通知（変化ありのみ）
 --mode afternoon  : 後場13:30のシグナル更新＆Discord通知
+
+v5変更点:
+  - screener.py が yfinance ベースになったため token を screen_candidates に渡さない
+  - monitor.py の get_daily_quotes も yfinance 経由（token は形式的に渡すのみ）
 """
 
 import argparse
@@ -29,8 +33,9 @@ MIN_SCORE      = 50
 SCREEN_TOP_N   = 30
 
 
-def run_screening(token: str, market_ctx: dict) -> list:
-    candidates_df = screen_candidates(token, top_n=SCREEN_TOP_N)
+def run_screening(market_ctx: dict) -> list:
+    # v5: token不要。screen_candidates() はwatchlistからyfinanceで取得
+    candidates_df = screen_candidates(top_n=SCREEN_TOP_N)
     if candidates_df.empty:
         return []
 
@@ -70,6 +75,7 @@ def main():
     market_ctx = get_market_context()
     print(f"市場バイアス: {market_ctx['market_bias']} ({market_ctx['market_score']}/40)")
 
+    # v5: token は monitor.py の後方互換用にのみ使う（実質不要）
     token = get_jquants_access_token()
 
     # ── 朝モード ──
@@ -88,7 +94,7 @@ def main():
                           ensure_ascii=False, indent=2)
             return
 
-        candidates = run_screening(token, market_ctx)
+        candidates = run_screening(market_ctx)
         print(f"候補銘柄: {len(candidates)}件")
 
         payloads = build_morning_payloads(candidates, market_ctx)
@@ -126,7 +132,7 @@ def main():
         new_candidates = []
         if args.mode == "afternoon":
             print("後場の新規スクリーニング中...")
-            all_new        = run_screening(token, market_ctx)
+            all_new        = run_screening(market_ctx)
             morning_codes  = {c["code"] for c in morning_candidates}
             new_candidates = [c for c in all_new if c["code"] not in morning_codes]
             print(f"新規候補: {len(new_candidates)}件")
