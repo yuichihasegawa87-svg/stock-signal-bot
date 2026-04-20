@@ -1,71 +1,46 @@
 """
-market_context.py v5.1
+market_context.py v5.2
 日経先物・ドル円・NY市場の前日結果を取得して
 今日の市場環境を判定する
 
-v5.1変更点:
-  - 重要経済指標の「日本株への影響度」を HIGH / MEDIUM / LOW の3段階で分類
-  - 影響度に応じた通知文を生成（固定文言の廃止）
+v5.2変更点:
+  - datetime.now() → datetime.now(JST) に統一（UTC日付ズレ修正）
+  - yfinance取得失敗時のエラー内容をprint出力（GitHub Actionsログで確認可能）
 """
 
 import yfinance as yf
 import requests
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 import os
+
+# ============================================================
+# タイムゾーン定数
+# ============================================================
+JST = timezone(timedelta(hours=9))
+
+
+def now_jst() -> datetime:
+    """GitHub ActionsサーバーがUTCで動いていてもJSTを返す"""
+    return datetime.now(JST)
 
 
 # ============================================================
 # 日本株への影響度マッピング
 # ============================================================
-#
-# HIGH   : 日本株が当日中に大きく動く可能性が高い指標
-#          → 見送り推奨（弱気相場と重なった場合）
-# MEDIUM : 影響はあるが限定的。方向感を変えるには至らないことが多い
-#          → 注意喚起のみ
-# LOW    : 日本株への直接影響はほぼなし
-#          → 通知なし（無視）
-#
-# キーワードはFinnhubが返すevent名に含まれる英単語で判定
-
 HIGH_IMPACT_KEYWORDS = [
-    # 米国：最重要
-    "nonfarm",          # 米雇用統計（NFP）← 最大の相場変動要因
-    "fed ",             # FOMC関連
-    "fomc",
-    "federal reserve",
-    "interest rate",    # 政策金利決定
-    "cpi",              # 米CPI（インフレ指標）
-    "gdp",              # 米GDP
-    # 日本：最重要
-    "boj",              # 日銀会合
-    "bank of japan",
-    "japan interest",
+    "nonfarm", "fed ", "fomc", "federal reserve",
+    "interest rate", "cpi", "gdp",
+    "boj", "bank of japan", "japan interest",
 ]
 
 MEDIUM_IMPACT_KEYWORDS = [
-    # 米国：中程度
-    "retail sales",     # 米小売売上高
-    "pce",              # 個人消費支出
-    "ism",              # ISM製造業・非製造業
-    "pmi",              # 購買担当者景気指数
-    "unemployment",     # 失業率
-    "jolts",            # 求人件数
-    # 日本
-    "japan cpi",        # 日本CPI
-    "japan gdp",
-    "tankan",           # 日銀短観
-    # 欧州：ドル円経由で間接影響
-    "ecb",              # ECB理事会
+    "retail sales", "pce", "ism", "pmi",
+    "unemployment", "jolts",
+    "japan cpi", "japan gdp", "tankan", "ecb",
 ]
-
-# それ以外（カナダCPI・英国指標等）は LOW として通知しない
 
 
 def classify_event_impact(event_name: str) -> str:
-    """
-    イベント名から日本株への影響度を返す
-    戻り値: "HIGH" / "MEDIUM" / "LOW"
-    """
     name_lower = event_name.lower()
     for kw in HIGH_IMPACT_KEYWORDS:
         if kw in name_lower:
@@ -77,24 +52,11 @@ def classify_event_impact(event_name: str) -> str:
 
 
 def get_market_context() -> dict:
-    """
-    市場全体の状況を取得して辞書で返す
-
-    戻り値例:
-    {
-        "nikkei":          {"price": 38250, "change_pct": 0.8},
-        "usdjpy":          {"price": 153.2, "change_pct": 0.3},
-        "sp500":           {"price": 5200,  "change_pct": 0.5},
-        "nasdaq":          {"price": 18000, "change_pct": 0.7},
-        "market_score":    35,
-        "market_bias":     "強気",
-        "has_major_event": True,
-        "event_impact":    "HIGH",        # "HIGH"/"MEDIUM"/"LOW"/"NONE"
-        "event_summary":   "🔴 日本株への影響：大きい\n..."
-    }
-    """
     context = {}
     score = 0
+
+    jst_now = now_jst()
+    print(f"JST現在時刻: {jst_now.strftime('%Y-%m-%d %H:%M')} JST")
 
     # ① 日経225
     try:
@@ -110,10 +72,12 @@ def get_market_context() -> dict:
             }
             if change_pct > 0:
                 score += 10
+            print(f"日経225: {last_close:,.0f} ({change_pct:+.2f}%)")
         else:
+            print(f"日経225: データ不足（{len(hist)}行）")
             context["nikkei"] = {"price": 0, "change_pct": 0}
     except Exception as e:
-        print(f"日経取得エラー: {e}")
+        print(f"日経225 取得エラー: {type(e).__name__}: {e}")
         context["nikkei"] = {"price": 0, "change_pct": 0}
 
     # ② ドル円
@@ -130,10 +94,12 @@ def get_market_context() -> dict:
             }
             if change_pct > 0:
                 score += 10
+            print(f"ドル円: {last:.2f} ({change_pct:+.2f}%)")
         else:
+            print(f"ドル円: データ不足（{len(hist)}行）")
             context["usdjpy"] = {"price": 0, "change_pct": 0}
     except Exception as e:
-        print(f"ドル円取得エラー: {e}")
+        print(f"ドル円 取得エラー: {type(e).__name__}: {e}")
         context["usdjpy"] = {"price": 0, "change_pct": 0}
 
     # ③ S&P500
@@ -150,10 +116,12 @@ def get_market_context() -> dict:
             }
             if change_pct > 0:
                 score += 10
+            print(f"S&P500: {last:,.0f} ({change_pct:+.2f}%)")
         else:
+            print(f"S&P500: データ不足（{len(hist)}行）")
             context["sp500"] = {"price": 0, "change_pct": 0}
     except Exception as e:
-        print(f"SP500取得エラー: {e}")
+        print(f"S&P500 取得エラー: {type(e).__name__}: {e}")
         context["sp500"] = {"price": 0, "change_pct": 0}
 
     # ④ ナスダック
@@ -170,17 +138,19 @@ def get_market_context() -> dict:
             }
             if change_pct > 0:
                 score += 10
+            print(f"Nasdaq: {last:,.0f} ({change_pct:+.2f}%)")
         else:
+            print(f"Nasdaq: データ不足（{len(hist)}行）")
             context["nasdaq"] = {"price": 0, "change_pct": 0}
     except Exception as e:
-        print(f"Nasdaq取得エラー: {e}")
+        print(f"Nasdaq 取得エラー: {type(e).__name__}: {e}")
         context["nasdaq"] = {"price": 0, "change_pct": 0}
 
-    # ⑤ 経済カレンダー（影響度分類つき）
-    event_impact, event_summary = _check_major_events()
+    # ⑤ 経済カレンダー
+    event_impact, event_summary = _check_major_events(jst_now)
     context["has_major_event"] = event_impact in ("HIGH", "MEDIUM")
-    context["event_impact"]    = event_impact   # "HIGH"/"MEDIUM"/"NONE"
-    context["event_summary"]   = event_summary  # Discord通知用テキスト
+    context["event_impact"]    = event_impact
+    context["event_summary"]   = event_summary
 
     # ⑥ 市場バイアス判定
     context["market_score"] = score
@@ -191,23 +161,19 @@ def get_market_context() -> dict:
     else:
         context["market_bias"] = "弱気"
 
+    print(f"市場スコア: {score}/40 → {context['market_bias']}")
     return context
 
 
-def _check_major_events() -> tuple[str, str]:
-    """
-    Finnhubで本日の重要経済指標を確認し、
-    日本株への影響度と通知用サマリーテキストを返す
-
-    戻り値: (影響度, サマリーテキスト)
-      影響度: "HIGH" / "MEDIUM" / "NONE"
-    """
+def _check_major_events(jst_now: datetime) -> tuple[str, str]:
     api_key = os.environ.get("FINNHUB_API_KEY", "")
     if not api_key:
         return "NONE", ""
 
     try:
-        today  = datetime.now().strftime("%Y-%m-%d")
+        # JSTの日付を使う（UTC日付ズレ修正）
+        today  = jst_now.strftime("%Y-%m-%d")
+        print(f"Finnhub検索日付: {today}（JST）")
         url    = "https://finnhub.io/api/v1/calendar/economic"
         params = {"from": today, "to": today, "token": api_key}
         res    = requests.get(url, params=params, timeout=10)
@@ -223,23 +189,20 @@ def _check_major_events() -> tuple[str, str]:
                 matched.append((impact, name, e.get("country", "")))
 
         if not matched:
+            print("重要経済指標: なし（日本株影響なし）")
             return "NONE", ""
 
-        # 最高影響度を全体の影響度とする
         overall = "HIGH" if any(i == "HIGH" for i, _, _ in matched) else "MEDIUM"
+        print(f"重要経済指標: {overall} ({len(matched)}件)")
         summary = _build_event_summary(overall, matched)
         return overall, summary
 
     except Exception as e:
-        print(f"Finnhubエラー: {e}")
+        print(f"Finnhub エラー: {type(e).__name__}: {e}")
         return "NONE", ""
 
 
 def _build_event_summary(overall: str, events: list) -> str:
-    """
-    影響度と検知したイベントリストから通知用テキストを生成する
-    events: [(影響度, イベント名, 国コード), ...]
-    """
     IMPACT_LABEL = {
         "HIGH":   "🔴 日本株への影響：**大きい**",
         "MEDIUM": "🟡 日本株への影響：**中程度**",
@@ -256,8 +219,6 @@ def _build_event_summary(overall: str, events: list) -> str:
     }
 
     lines = [IMPACT_LABEL[overall], ""]
-
-    # HIGH → MEDIUM の順で列挙
     for impact in ("HIGH", "MEDIUM"):
         for ev_impact, name, country in events:
             if ev_impact != impact:
@@ -265,7 +226,6 @@ def _build_event_summary(overall: str, events: list) -> str:
             flag = "🇺🇸" if country == "US" else ("🇯🇵" if country == "JP" else "🌐")
             tag  = "【要注意】" if impact == "HIGH" else "【注意】"
             lines.append(f"{flag} {tag} {name}")
-
     lines.append("")
     lines.append(IMPACT_DESC[overall])
     return "\n".join(lines)

@@ -1,31 +1,21 @@
 """
-notifier.py v5.1
+notifier.py v5.2
 Discord Webhook を使ってiPhoneに通知を送る
 
-v5.1変更点:
-  - 重要経済指標の通知を影響度（HIGH/MEDIUM）に応じた内容に変更
-  - HIGH：見送り推奨 + 具体的な指標名と影響説明
-  - MEDIUM：注意喚起のみ（銘柄通知は継続）
-  - 固定文言「FOMC・日銀会合・NFP等」を廃止
-
-Discord Webhookの仕様:
-- 1メッセージの上限: 2000文字
-- 認証: WebhookのURLを1つ登録するだけ。トークンもパスワードも不要。
-- Embedsという見やすいカード形式で表示できる
+v5.2変更点:
+  - 日付表示を datetime.now(JST) に修正（UTC日付ズレ修正）
 """
 
 import requests
 import os
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 
+JST = timezone(timedelta(hours=9))
 
 DISCORD_MAX_CHARS = 2000
 
 
 def _send_discord(content: str = None, embeds: list = None) -> bool:
-    """
-    Discord WebhookにメッセージまたはEmbedsを送信する内部関数
-    """
     webhook_url = os.environ.get("DISCORD_WEBHOOK_URL", "")
     if not webhook_url:
         print("DISCORD_WEBHOOK_URL が設定されていません")
@@ -50,9 +40,6 @@ def _send_discord(content: str = None, embeds: list = None) -> bool:
 
 
 def send_discord_messages(payloads: list) -> bool:
-    """
-    複数のpayload（contentまたはembeds）をDiscordに順番に送信する
-    """
     success = True
     for p in payloads:
         result = _send_discord(
@@ -64,31 +51,22 @@ def send_discord_messages(payloads: list) -> bool:
     return success
 
 
-# ============================================================
-# 色の定数（Discord Embedのサイドバー色）
-# ============================================================
-COLOR_GREEN  = 0x00C851  # 強気・強化
-COLOR_YELLOW = 0xFFBB33  # 中立・弱体化
-COLOR_RED    = 0xFF4444  # 弱気・撤退
-COLOR_BLUE   = 0x33B5E5  # 情報
+COLOR_GREEN  = 0x00C851
+COLOR_YELLOW = 0xFFBB33
+COLOR_RED    = 0xFF4444
+COLOR_BLUE   = 0x33B5E5
 
-
-# ============================================================
-# 朝のシグナル通知
-# ============================================================
 
 def build_morning_payloads(candidates: list, market_ctx: dict) -> list:
-    """
-    朝のシグナルをDiscord送信用payloadのリストに変換する
-    """
-    today  = datetime.now().strftime("%Y/%m/%d")
-    bias   = market_ctx.get("market_bias", "中立")
-    ms     = market_ctx.get("market_score", 0)
-    nk     = market_ctx.get("nikkei", {})
-    fx     = market_ctx.get("usdjpy", {})
-    sp     = market_ctx.get("sp500", {})
-    nq     = market_ctx.get("nasdaq", {})
-    impact  = market_ctx.get("event_impact", "NONE")    # HIGH/MEDIUM/NONE
+    # JSTで日付を取得（修正箇所）
+    today   = datetime.now(JST).strftime("%Y/%m/%d")
+    bias    = market_ctx.get("market_bias", "中立")
+    ms      = market_ctx.get("market_score", 0)
+    nk      = market_ctx.get("nikkei", {})
+    fx      = market_ctx.get("usdjpy", {})
+    sp      = market_ctx.get("sp500", {})
+    nq      = market_ctx.get("nasdaq", {})
+    impact  = market_ctx.get("event_impact", "NONE")
     summary = market_ctx.get("event_summary", "")
 
     bias_emoji = {"強気": "🟢", "中立": "🟡", "弱気": "🔴"}.get(bias, "🟡")
@@ -99,7 +77,6 @@ def build_morning_payloads(candidates: list, market_ctx: dict) -> list:
 
     payloads = []
 
-    # ── Embed①：市場環境サマリー ──
     market_embed = {
         "title": f"📈 株シグナル {today} 朝8:00",
         "color": color,
@@ -119,7 +96,6 @@ def build_morning_payloads(candidates: list, market_ctx: dict) -> list:
         "footer": {"text": "10:30前場・13:30後場に状況変化を再通知します"}
     }
 
-    # ── 経済指標アラート（影響度に応じて内容を変える）──
     if impact == "HIGH":
         market_embed["fields"].append({
             "name": "⚠️ 本日の重要経済指標",
@@ -132,7 +108,6 @@ def build_morning_payloads(candidates: list, market_ctx: dict) -> list:
             "value": summary,
             "inline": False
         })
-    # LOW / NONE は通知しない
 
     if not candidates:
         market_embed["fields"].append({
@@ -150,7 +125,6 @@ def build_morning_payloads(candidates: list, market_ctx: dict) -> list:
     })
     payloads.append({"embeds": [market_embed]})
 
-    # ── Embed②以降：銘柄1件ずつ ──
     medals = ["🥇", "🥈", "🥉", "4️⃣", "5️⃣"]
     for i, c in enumerate(candidates):
         medal = medals[i] if i < len(medals) else f"{i+1}."
@@ -205,15 +179,9 @@ def build_morning_payloads(candidates: list, market_ctx: dict) -> list:
         }
         payloads.append({"embeds": [embed]})
 
-    payloads.append({
-        "content": "⚠️ 参考情報です。最終判断はご自身でお願いします。"
-    })
+    payloads.append({"content": "⚠️ 参考情報です。最終判断はご自身でお願いします。"})
     return payloads
 
-
-# ============================================================
-# 前場・後場の監視通知
-# ============================================================
 
 def build_monitor_payloads(
     mode: str,
@@ -221,12 +189,10 @@ def build_monitor_payloads(
     new_candidates: list,
     market_ctx: dict
 ) -> tuple[list, bool]:
-    """
-    前場・後場の監視結果をDiscord送信用payloadに変換する
-    """
     from monitor import SIGNAL_STRENGTHEN, SIGNAL_WEAKEN, SIGNAL_EXIT
 
-    now        = datetime.now().strftime("%H:%M")
+    # JSTで時刻を取得（修正箇所）
+    now        = datetime.now(JST).strftime("%H:%M")
     label      = "前場レビュー" if mode == "midmorning" else "後場シグナル"
     bias       = market_ctx.get("market_bias", "中立")
     bias_emoji = {"強気": "🟢", "中立": "🟡", "弱気": "🔴"}.get(bias, "🟡")
@@ -329,21 +295,15 @@ def build_monitor_payloads(
     return payloads, True
 
 
-# ============================================================
-# 見送り推奨通知（弱気相場 + HIGH影響度指標が重なった日）
-# ============================================================
-
 def build_skip_payloads(market_ctx: dict) -> list:
-    """
-    見送り推奨日の詳細通知を生成する。
-    """
-    today   = datetime.now().strftime("%Y/%m/%d")
+    # JSTで日付を取得（修正箇所）
+    today   = datetime.now(JST).strftime("%Y/%m/%d")
     ms      = market_ctx.get("market_score", 0)
     nk      = market_ctx.get("nikkei", {})
     fx      = market_ctx.get("usdjpy", {})
     sp      = market_ctx.get("sp500", {})
     nq      = market_ctx.get("nasdaq", {})
-    summary = market_ctx.get("event_summary", "")  # 影響度分類済みのテキスト
+    summary = market_ctx.get("event_summary", "")
 
     def fmt(v):
         return f"{'+'if v >= 0 else ''}{v:.2f}%"
@@ -362,7 +322,6 @@ def build_skip_payloads(market_ctx: dict) -> list:
 
     payloads = []
 
-    # ── Embed①：見送り宣言 ──
     payloads.append({"embeds": [{
         "title": f"🚫 本日は見送りを推奨  {today}",
         "description": (
@@ -395,7 +354,6 @@ def build_skip_payloads(market_ctx: dict) -> list:
         ]
     }]})
 
-    # ── Embed②：見送る理由の解説 ──
     payloads.append({"embeds": [{
         "title": "📖 なぜ今日は見送るべきか",
         "color": COLOR_RED,
@@ -405,7 +363,6 @@ def build_skip_payloads(market_ctx: dict) -> list:
                 "value": (
                     "日本株に影響の大きい指標の発表前後30分は\n"
                     "通常の3〜5倍のボラティリティが発生します。\n"
-                    "損切りラインを瞬時に突き破るケースが多く、\n"
                     "テクニカル分析が機能しにくい環境です。"
                 ),
                 "inline": False
@@ -429,7 +386,6 @@ def build_skip_payloads(market_ctx: dict) -> list:
         ]
     }]})
 
-    # ── Embed③：今日やるべきこと ──
     payloads.append({"embeds": [{
         "title": "✅ 今日やるべきこと",
         "color": COLOR_BLUE,
