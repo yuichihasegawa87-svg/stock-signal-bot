@@ -1,5 +1,5 @@
 """
-notifier.py v4
+notifier.py v5      ← v4 から修正
 Discord Webhook を使ってiPhoneに通知を送る
 
 Discord Webhookの仕様:

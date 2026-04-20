@@ -1,5 +1,5 @@
 """
-monitor.py
+monitor.py v5
 朝に通知した銘柄の「状況変化」を検知する
 
 世界のクオンツが使う原則：
@@ -35,7 +35,7 @@ def check_signal_status(morning_candidates: list, token: str) -> list:
 
     Args:
         morning_candidates: 朝のシグナルで通知した銘柄リスト
-        token: J-Quantsアクセストークン
+        token: J-Quantsアクセストークン（v5では未使用・後方互換のため残存）
 
     Returns:
         変化があった銘柄のリスト（変化なしは含まない）
@@ -43,8 +43,8 @@ def check_signal_status(morning_candidates: list, token: str) -> list:
     results = []
 
     for candidate in morning_candidates:
-        code       = candidate["code"]
-        name       = candidate["name"]
+        code          = candidate["code"]
+        name          = candidate["name"]
         morning_score = candidate["score"]
         morning_rsi   = candidate["indicators"].get("rsi", 50)
         entry_price   = candidate["targets"].get("entry", 0)
@@ -117,18 +117,18 @@ def check_signal_status(morning_candidates: list, token: str) -> list:
                 continue
 
             results.append({
-                "code":          code,
-                "name":          name,
-                "change_type":   change_type,
+                "code":           code,
+                "name":           name,
+                "change_type":    change_type,
                 "change_reasons": change_reasons,
-                "morning_score": morning_score,
-                "current_close": latest_close,
-                "entry_price":   entry_price,
-                "target_price":  target_price,
-                "stop_price":    stop_price,
-                "current_rsi":   current_rsi,
-                "vol_ratio":     round(vol_ratio, 2),
-                "bb_position":   round(bb_pos, 1)
+                "morning_score":  morning_score,
+                "current_close":  latest_close,
+                "entry_price":    entry_price,
+                "target_price":   target_price,
+                "stop_price":     stop_price,
+                "current_rsi":    current_rsi,
+                "vol_ratio":      round(vol_ratio, 2),
+                "bb_position":    round(bb_pos, 1)
             })
 
         except Exception as e:
@@ -136,89 +136,3 @@ def check_signal_status(morning_candidates: list, token: str) -> list:
             continue
 
     return results
-
-
-# ============================================================
-# メール本文生成（前場/後場共通）
-# ============================================================
-
-def build_monitor_email(
-    mode: str,
-    changed_candidates: list,
-    new_candidates: list,
-    market_ctx: dict
-) -> tuple[str, bool]:
-    """
-    監視結果のメール本文を生成する
-
-    Args:
-        mode: "midmorning"(前場) or "afternoon"(後場)
-        changed_candidates: 状況が変化した朝の銘柄
-        new_candidates: 新たに浮上した銘柄
-        market_ctx: 市場環境
-
-    Returns:
-        (メール本文, 送信すべきかどうか)
-    """
-    mode_label = "前場レビュー（10:30）" if mode == "midmorning" else "後場シグナル（13:30）"
-    now = datetime.now().strftime("%Y/%m/%d %H:%M")
-    bias = market_ctx.get("market_bias", "中立")
-    bias_emoji = {"強気": "🟢", "中立": "🟡", "弱気": "🔴"}.get(bias, "🟡")
-
-    # 後場は常に送信、前場は変化があった場合のみ
-    should_send = (mode == "afternoon") or bool(changed_candidates or new_candidates)
-
-    if not should_send:
-        return "変化なし", False
-
-    body = f"【{mode_label} {now}】\n"
-    body += f"市場環境: {bias_emoji} {bias}\n"
-    body += "━" * 40 + "\n\n"
-
-    # ── 朝の銘柄の状況変化 ──
-    if changed_candidates:
-        body += "■ 朝の銘柄：状況変化アリ\n\n"
-
-        for c in changed_candidates:
-            change_type = c["change_type"]
-
-            if change_type == SIGNAL_STRENGTHEN:
-                icon = "📈 【強化】継続/追加エントリー推奨"
-            elif change_type == SIGNAL_WEAKEN:
-                icon = "⚠️  【弱体化】利確を検討"
-            else:
-                icon = "🚨 【撤退】損切り/見送りを推奨"
-
-            price_diff = c["current_close"] - c["entry_price"]
-            price_diff_pct = price_diff / c["entry_price"] * 100
-
-            body += f"{icon}\n"
-            body += f"  {c['name']}（{c['code']}）\n"
-            body += f"  現在値: {c['current_close']:,.0f}円"
-            body += f"  (朝比 {'+' if price_diff >= 0 else ''}{price_diff_pct:.1f}%)\n"
-            for reason in c["change_reasons"]:
-                body += f"  → {reason}\n"
-            body += f"  利確: {c['target_price']:,.0f}円 / 損切: {c['stop_price']:,.0f}円\n\n"
-
-    else:
-        body += "■ 朝の銘柄：変化なし（ホールド継続）\n\n"
-
-    # ── 新規浮上銘柄 ──
-    if new_candidates:
-        body += "■ 新たに浮上した有力銘柄\n\n"
-        medals = ["🥇", "🥈", "🥉"]
-        for i, c in enumerate(new_candidates[:3]):
-            medal = medals[i] if i < len(medals) else "▶"
-            body += f"{medal} {c['name']}（{c['code']}）  信頼度: {c['score']:.0f}%\n"
-            body += f"   前日比: +{c['price_change_pct']:.1f}%  出来高: {c['volume_ratio']:.1f}倍\n"
-            tgt = c.get("targets", {})
-            body += f"   参考エントリー: {tgt.get('entry', '-'):,.0f}円\n"
-            body += f"   利確: {tgt.get('target', '-'):,.0f}円 / 損切: {tgt.get('stop', '-'):,.0f}円\n\n"
-    else:
-        if mode == "afternoon":
-            body += "■ 新規銘柄：後場で新たな候補は見つかりませんでした\n\n"
-
-    body += "━" * 40 + "\n"
-    body += "⚠️ 最終判断はご自身でお願いします\n"
-
-    return body, True

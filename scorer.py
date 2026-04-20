@@ -1,5 +1,5 @@
 """
-scorer.py
+scorer.py v5
 スクリーニング通過銘柄にテクニカル指標を計算して
 0〜100の信頼度スコアを付与する
 """
@@ -13,15 +13,17 @@ import numpy as np
 # ============================================================
 
 def calc_rsi(series: pd.Series, period: int = 14) -> float:
-    """RSIを計算（最新値のみ返す）"""
-    delta = series.diff()
-    gain = delta.where(delta > 0, 0.0)
-    loss = -delta.where(delta < 0, 0.0)
+    """RSIを計算（最新値のみ返す）。全陽線等でNaNになる場合は50.0を返す"""
+    delta    = series.diff()
+    gain     = delta.where(delta > 0, 0.0)
+    loss     = -delta.where(delta < 0, 0.0)
     avg_gain = gain.rolling(period).mean()
     avg_loss = loss.rolling(period).mean()
-    rs = avg_gain / avg_loss.replace(0, np.nan)
-    rsi = 100 - (100 / (1 + rs))
-    return round(rsi.iloc[-1], 1) if not rsi.empty else 50.0
+    rs       = avg_gain / avg_loss.replace(0, np.nan)
+    rsi      = 100 - (100 / (1 + rs))
+    val      = rsi.iloc[-1] if not rsi.empty else np.nan
+    # NaN（全陽線・全陰線・データ不足）は中立値50.0として扱う ← 修正
+    return round(float(val), 1) if not np.isnan(val) else 50.0
 
 
 def calc_macd(series: pd.Series):
@@ -29,9 +31,9 @@ def calc_macd(series: pd.Series):
     MACDを計算
     戻り値: (macd値, シグナル値, ヒストグラム値, ゴールデンクロスかどうか)
     """
-    ema12 = series.ewm(span=12, adjust=False).mean()
-    ema26 = series.ewm(span=26, adjust=False).mean()
-    macd  = ema12 - ema26
+    ema12  = series.ewm(span=12, adjust=False).mean()
+    ema26  = series.ewm(span=26, adjust=False).mean()
+    macd   = ema12 - ema26
     signal = macd.ewm(span=9, adjust=False).mean()
     hist   = macd - signal
 
@@ -48,11 +50,11 @@ def calc_bollinger(series: pd.Series, period: int = 20):
     ボリンジャーバンドを計算
     戻り値: (上限, 中心, 下限, 現在値の位置%）
     """
-    ma = series.rolling(period).mean()
-    std = series.rolling(period).std()
-    upper = ma + 2 * std
-    lower = ma - 2 * std
-    last = series.iloc[-1]
+    ma         = series.rolling(period).mean()
+    std        = series.rolling(period).std()
+    upper      = ma + 2 * std
+    lower      = ma - 2 * std
+    last       = series.iloc[-1]
     band_range = upper.iloc[-1] - lower.iloc[-1]
     position_pct = (last - lower.iloc[-1]) / band_range * 100 if band_range > 0 else 50
     return round(upper.iloc[-1], 0), round(ma.iloc[-1], 0), round(lower.iloc[-1], 0), round(position_pct, 1)
@@ -111,7 +113,7 @@ def calculate_score(row: dict, market_score: int) -> dict:
     else:
         vol_points = 0
     score += vol_points
-    indicators["volume_ratio"] = vr
+    indicators["volume_ratio"]  = vr
     indicators["volume_points"] = vol_points
 
     # ③ 価格変化率（最大15点）
@@ -145,8 +147,8 @@ def calculate_score(row: dict, market_score: int) -> dict:
 
     # ⑤ MACD（最大15点）
     macd_val, signal_val, hist_val, golden_cross = calc_macd(close_series)
-    indicators["macd"] = macd_val
-    indicators["macd_signal"] = signal_val
+    indicators["macd"]             = macd_val
+    indicators["macd_signal"]      = signal_val
     indicators["macd_golden_cross"] = golden_cross
     if golden_cross:
         score += 15
@@ -173,8 +175,8 @@ def calculate_score(row: dict, market_score: int) -> dict:
 
     # ⑦ 移動平均パーフェクトオーダー（最大5点）
     ma5, ma25, perfect_order = calc_moving_averages(close_series)
-    indicators["ma5"] = ma5
-    indicators["ma25"] = ma25
+    indicators["ma5"]          = ma5
+    indicators["ma25"]         = ma25
     indicators["perfect_order"] = perfect_order
     if perfect_order:
         score += 5
@@ -197,14 +199,14 @@ def calc_entry_targets(row: dict) -> dict:
     if close == 0:
         return {}
 
-    entry   = close                                  # 寄り付き付近
-    target  = round(close * 1.015, 0)               # +1.5%で利確
-    stop    = round(close * 0.993, 0)               # -0.7%で損切り
+    entry    = close                                          # 寄り付き付近
+    target   = round(close * 1.015, 0)                      # +1.5%で利確
+    stop     = round(close * 0.993, 0)                      # -0.7%で損切り
     rr_ratio = round((target - entry) / (entry - stop), 2)  # リスクリワード比
 
     return {
-        "entry": entry,
-        "target": target,
-        "stop": stop,
+        "entry":    entry,
+        "target":   target,
+        "stop":     stop,
         "rr_ratio": rr_ratio
     }
