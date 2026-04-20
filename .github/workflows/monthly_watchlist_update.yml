@@ -1,0 +1,38 @@
+name: 📋 月次 watchlist 自動更新
+
+on:
+  # 毎月1日 朝7:00 JST（UTC前日22:00）に実行
+  # ※ GitHub ActionsのcronはUTC基準。"L"（最終日指定）は非サポートのため毎月1日実行に修正。
+  schedule:
+    - cron: '0 22 1 * *'  # 毎月1日 22:00 UTC = 翌2日 7:00 JST
+  workflow_dispatch:
+
+jobs:
+  update-watchlist:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 依存パッケージをインストール
+        run: pip install -r requirements.txt
+
+      - name: 月次 watchlist を更新
+        run: python screener.py update_watchlist
+
+      - name: watchlist.json をコミット & プッシュ
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add watchlist.json
+          git diff --staged --quiet && echo "変更なし" || (
+            git commit -m "📋 月次 watchlist 更新 $(date '+%Y-%m-%d')" &&
+            git push
+          )
