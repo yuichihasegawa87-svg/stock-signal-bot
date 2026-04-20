@@ -1,8 +1,10 @@
 name: 📈 朝のシグナル通知（8:00）
+
 on:
   schedule:
-    - cron: '0 23 * * 0-4'
+    - cron: '0 23 * * 0-4'  # 毎朝8:00 JST（UTC 23:00 = JST 翌8:00）
   workflow_dispatch:
+
 jobs:
   morning-signal:
     runs-on: ubuntu-latest
@@ -15,7 +17,6 @@ jobs:
         run: pip install -r requirements.txt
       - name: 朝のシグナルを生成してDiscordに通知
         env:
-          JQUANTS_API_KEY: ${{ secrets.JQUANTS_API_KEY }}
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           FINNHUB_API_KEY: ${{ secrets.FINNHUB_API_KEY }}
         run: python main.py --mode morning
