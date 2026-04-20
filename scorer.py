@@ -1,7 +1,12 @@
 """
-scorer.py v5
+scorer.py v5.2
 スクリーニング通過銘柄にテクニカル指標を計算して
 0〜100の信頼度スコアを付与する
+
+v5.2変更点:
+  - calc_macd の golden_cross を bool() でキャスト
+  - calc_moving_averages の perfect_order を bool() でキャスト
+  - numpy の bool_ 型が JSON シリアライズできないバグを修正
 """
 
 import pandas as pd
@@ -22,7 +27,6 @@ def calc_rsi(series: pd.Series, period: int = 14) -> float:
     rs       = avg_gain / avg_loss.replace(0, np.nan)
     rsi      = 100 - (100 / (1 + rs))
     val      = rsi.iloc[-1] if not rsi.empty else np.nan
-    # NaN（全陽線・全陰線・データ不足）は中立値50.0として扱う ← 修正
     return round(float(val), 1) if not np.isnan(val) else 50.0
 
 
@@ -37,10 +41,12 @@ def calc_macd(series: pd.Series):
     signal = macd.ewm(span=9, adjust=False).mean()
     hist   = macd - signal
 
-    # ゴールデンクロス：前日はmacd<signal、当日はmacd>signal
+    # bool()でキャスト → numpy bool_ ではなく Python bool にする（修正箇所）
     golden_cross = False
     if len(macd) >= 2:
-        golden_cross = (macd.iloc[-2] < signal.iloc[-2]) and (macd.iloc[-1] >= signal.iloc[-1])
+        golden_cross = bool(
+            (macd.iloc[-2] < signal.iloc[-2]) and (macd.iloc[-1] >= signal.iloc[-1])
+        )
 
     return round(macd.iloc[-1], 4), round(signal.iloc[-1], 4), round(hist.iloc[-1], 4), golden_cross
 
@@ -67,7 +73,10 @@ def calc_moving_averages(series: pd.Series):
     ma5  = series.rolling(5).mean().iloc[-1]
     ma25 = series.rolling(25).mean().iloc[-1]
     ma75 = series.rolling(75).mean().iloc[-1] if len(series) >= 75 else None
-    perfect_order = ma5 > ma25 and (ma75 is None or ma25 > ma75)
+
+    # bool()でキャスト → numpy bool_ ではなく Python bool にする（修正箇所）
+    perfect_order = bool(ma5 > ma25 and (ma75 is None or ma25 > ma75))
+
     return round(ma5, 0), round(ma25, 0), perfect_order
 
 
@@ -80,13 +89,13 @@ def calculate_score(row: dict, market_score: int) -> dict:
     1銘柄のスコアを計算して辞書で返す
 
     スコア配分:
-    - 市場環境    : 最大20点（market_contextから）
+    - 市場環境    : 最大20点
     - 出来高比率  : 最大20点
     - 価格変化率  : 最大15点
     - RSI         : 最大15点
     - MACD        : 最大15点
     - ボリンジャー: 最大10点
-    - 移動平均    :  最大5点
+    - 移動平均    : 最大5点
     合計100点
     """
     df = row.get("_df", pd.DataFrame())
@@ -98,7 +107,6 @@ def calculate_score(row: dict, market_score: int) -> dict:
     indicators = {}
 
     # ① 市場環境スコア（最大20点）
-    # market_scoreは0〜40点なので半分にして20点満点に
     market_points = min(market_score / 2, 20)
     score += market_points
 
@@ -135,20 +143,18 @@ def calculate_score(row: dict, market_score: int) -> dict:
     rsi = calc_rsi(close_series)
     indicators["rsi"] = rsi
     if 50 <= rsi <= 70:
-        # 理想的な上昇途中
         score += 15
     elif 45 <= rsi < 50:
         score += 8
     elif rsi > 70:
-        # 買われすぎ気味 → 減点
         score += 5
     else:
         score += 0
 
     # ⑤ MACD（最大15点）
     macd_val, signal_val, hist_val, golden_cross = calc_macd(close_series)
-    indicators["macd"]             = macd_val
-    indicators["macd_signal"]      = signal_val
+    indicators["macd"]              = macd_val
+    indicators["macd_signal"]       = signal_val
     indicators["macd_golden_cross"] = golden_cross
     if golden_cross:
         score += 15
@@ -163,10 +169,8 @@ def calculate_score(row: dict, market_score: int) -> dict:
     bb_upper, bb_mid, bb_lower, bb_pos = calc_bollinger(close_series)
     indicators["bb_position"] = bb_pos
     if 50 <= bb_pos <= 80:
-        # 中心〜上限の間で上昇中が理想
         score += 10
     elif bb_pos > 80:
-        # 上限突破は過熱感あり
         score += 5
     elif 30 <= bb_pos < 50:
         score += 3
@@ -175,14 +179,14 @@ def calculate_score(row: dict, market_score: int) -> dict:
 
     # ⑦ 移動平均パーフェクトオーダー（最大5点）
     ma5, ma25, perfect_order = calc_moving_averages(close_series)
-    indicators["ma5"]          = ma5
-    indicators["ma25"]         = ma25
+    indicators["ma5"]           = ma5
+    indicators["ma25"]          = ma25
     indicators["perfect_order"] = perfect_order
     if perfect_order:
         score += 5
 
     return {
-        "score": round(score, 1),
+        "score":      round(score, 1),
         "indicators": indicators
     }
 
@@ -199,10 +203,10 @@ def calc_entry_targets(row: dict) -> dict:
     if close == 0:
         return {}
 
-    entry    = close                                          # 寄り付き付近
-    target   = round(close * 1.015, 0)                      # +1.5%で利確
-    stop     = round(close * 0.993, 0)                      # -0.7%で損切り
-    rr_ratio = round((target - entry) / (entry - stop), 2)  # リスクリワード比
+    entry    = close
+    target   = round(close * 1.015, 0)
+    stop     = round(close * 0.993, 0)
+    rr_ratio = round((target - entry) / (entry - stop), 2)
 
     return {
         "entry":    entry,
