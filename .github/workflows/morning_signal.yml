@@ -1,0 +1,27 @@
+name: 📈 朝のシグナル通知（8:00）
+
+on:
+  schedule:
+    - cron: '3 23 * * 1-5'  # 毎朝8:03 JST（月〜金）← :00を避けて競合回避
+  workflow_dispatch:
+
+jobs:
+  morning-signal:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: 依存パッケージをインストール
+        run: pip install -r requirements.txt
+      - name: 朝のシグナルを生成してDiscordに通知
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          FINNHUB_API_KEY: ${{ secrets.FINNHUB_API_KEY }}
+        run: python main.py --mode morning
+      - name: 朝の結果をキャッシュに保存
+        uses: actions/cache/save@v4
+        with:
+          path: morning_result.json
+          key: morning-signal-${{ github.run_id }}
