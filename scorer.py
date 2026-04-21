@@ -1,12 +1,17 @@
 """
-scorer.py v5.2
+scorer.py v5.3
 スクリーニング通過銘柄にテクニカル指標を計算して
 0〜100の信頼度スコアを付与する
 
-v5.2変更点:
-  - calc_macd の golden_cross を bool() でキャスト
-  - calc_moving_averages の perfect_order を bool() でキャスト
-  - numpy の bool_ 型が JSON シリアライズできないバグを修正
+v5.3変更点:
+  - calc_macd の golden_cross を bool() でキャスト（JSON保存バグ修正）
+  - calc_moving_averages の perfect_order を bool() でキャスト（同上）
+  - calc_entry_targets をピボットポイント + ATRベースに全面改修
+    - エントリー : ピボット付近（前日終値との中間値、最低+0.3%）
+    - 利確①     : 第1抵抗線（R1）← 半分はここで利確
+    - 利確②     : 第2抵抗線（R2）← 残りを引っ張る
+    - 損切り     : ATR×0.5（ボラティリティ連動）
+    - RR比1.5未満は空dictを返して候補から除外
 """
 
 import pandas as pd
@@ -18,7 +23,7 @@ import numpy as np
 # ============================================================
 
 def calc_rsi(series: pd.Series, period: int = 14) -> float:
-    """RSIを計算（最新値のみ返す）。全陽線等でNaNになる場合は50.0を返す"""
+    """RSIを計算（最新値のみ返す）。NaNは中立値50.0を返す"""
     delta    = series.diff()
     gain     = delta.where(delta > 0, 0.0)
     loss     = -delta.where(delta < 0, 0.0)
@@ -41,7 +46,7 @@ def calc_macd(series: pd.Series):
     signal = macd.ewm(span=9, adjust=False).mean()
     hist   = macd - signal
 
-    # bool()でキャスト → numpy bool_ ではなく Python bool にする（修正箇所）
+    # bool()でキャスト → numpy bool_ → Python bool（JSON保存バグ修正）
     golden_cross = False
     if len(macd) >= 2:
         golden_cross = bool(
@@ -74,7 +79,7 @@ def calc_moving_averages(series: pd.Series):
     ma25 = series.rolling(25).mean().iloc[-1]
     ma75 = series.rolling(75).mean().iloc[-1] if len(series) >= 75 else None
 
-    # bool()でキャスト → numpy bool_ ではなく Python bool にする（修正箇所）
+    # bool()でキャスト → numpy bool_ → Python bool（JSON保存バグ修正）
     perfect_order = bool(ma5 > ma25 and (ma75 is None or ma25 > ma75))
 
     return round(ma5, 0), round(ma25, 0), perfect_order
@@ -192,25 +197,114 @@ def calculate_score(row: dict, market_score: int) -> dict:
 
 
 # ============================================================
-# エントリー価格の参考値を計算
+# エントリー・利確・損切り価格の算出
 # ============================================================
 
 def calc_entry_targets(row: dict) -> dict:
     """
-    参考エントリー価格・利確・損切りの目安を返す
+    ピボットポイント + ATRベースの現実的な価格を算出する
+
+    【設計根拠】
+    エントリー : ピボット付近（前日終値とピボットの中間値、最低前日終値+0.3%）
+                 → 寄り付きのギャップアップを考慮しつつ現実的な約定価格
+    利確①(R1) : 第1抵抗線 = 機関投資家の売り圧力が集中しやすい価格帯
+                 → ここで半分利確してリスクをゼロに近づける
+    利確②(R2) : 第2抵抗線 = 強いトレンドが続いた場合の上値目標
+                 → 残りポジションをここまで引っ張る
+    損切り     : エントリー − ATR×0.5（ボラティリティ連動）
+                 → ボラが高い銘柄は広く、安定銘柄は狭くリスクを均一化
+    RR比       : 1.5未満の場合は空dictを返して候補から除外
+                 → リスクに見合わないトレードを事前に弾く
     """
     close = row.get("close", 0)
     if close == 0:
         return {}
 
-    entry    = close
-    target   = round(close * 1.015, 0)
-    stop     = round(close * 0.993, 0)
-    rr_ratio = round((target - entry) / (entry - stop), 2)
+    df = row.get("_df", None)
 
+    if df is not None and len(df) >= 15 and \
+       all(c in df.columns for c in ["High", "Low", "Close"]):
+        try:
+            high         = df["High"].astype(float)
+            low          = df["Low"].astype(float)
+            close_series = df["Close"].astype(float)
+
+            # 前日の高値・安値・終値
+            prev_high  = float(high.iloc[-2])
+            prev_low   = float(low.iloc[-2])
+            prev_close = float(close_series.iloc[-2])
+
+            # ── ピボットポイント計算 ──
+            pivot = (prev_high + prev_low + prev_close) / 3
+            r1    = 2 * pivot - prev_low          # 第1抵抗線
+            r2    = pivot + (prev_high - prev_low) # 第2抵抗線
+            s1    = 2 * pivot - prev_high          # 第1支持線（損切り参考）
+
+            # ── ATR計算（最大14日）──
+            tr_list = []
+            for i in range(1, min(15, len(df))):
+                h  = float(high.iloc[-i])
+                l  = float(low.iloc[-i])
+                pc = float(close_series.iloc[-i - 1])
+                tr_list.append(max(h - l, abs(h - pc), abs(l - pc)))
+            atr = sum(tr_list) / len(tr_list) if tr_list else close * 0.01
+
+            # ── エントリー価格 ──
+            # 前日終値とピボットの中間値（最低でも前日終値+0.3%）
+            entry = round(max(close * 1.003, (close + pivot) / 2), 0)
+
+            # ── 損切り：ATR×0.5（ボラティリティ連動）──
+            stop = round(entry - atr * 0.5, 0)
+            if stop >= entry:
+                return {}
+
+            # ── 利確①：R1（R1がエントリーより十分上にない場合は+1%）──
+            target1 = round(r1, 0) if r1 > entry * 1.005 else round(entry * 1.01, 0)
+
+            # ── 利確②：R2（R2がR1より十分上にない場合はR1+2%）──
+            target2 = round(r2, 0) if r2 > target1 * 1.005 else round(target1 * 1.02, 0)
+
+            # ── RR比（利確①基準）──
+            risk   = entry - stop
+            reward = target1 - entry
+            if risk <= 0:
+                return {}
+            rr_ratio = round(reward / risk, 2)
+
+            # RR比1.5未満はリスクに見合わないため除外
+            if rr_ratio < 1.5:
+                return {}
+
+            return {
+                "entry":    int(entry),
+                "target1":  int(target1),
+                "target2":  int(target2),
+                "stop":     int(stop),
+                "rr_ratio": rr_ratio,
+                "pivot":    int(round(pivot, 0)),
+                "s1":       int(round(s1, 0)),
+                "atr":      int(round(atr, 0)),
+            }
+
+        except Exception as e:
+            print(f"  ピボット計算エラー: {e} → フォールバック使用")
+
+    # ── フォールバック（DataFrame不足・計算失敗時）──
+    entry    = int(round(close * 1.005, 0))
+    target1  = int(round(entry * 1.015, 0))
+    target2  = int(round(entry * 1.030, 0))
+    stop     = int(round(entry * 0.993, 0))
+    risk     = entry - stop
+    reward   = target1 - entry
+    if risk <= 0:
+        return {}
+    rr_ratio = round(reward / risk, 2)
+    if rr_ratio < 1.5:
+        return {}
     return {
         "entry":    entry,
-        "target":   target,
+        "target1":  target1,
+        "target2":  target2,
         "stop":     stop,
-        "rr_ratio": rr_ratio
+        "rr_ratio": rr_ratio,
     }

@@ -1,9 +1,11 @@
 """
-notifier.py v5.2
+notifier.py v5.3
 Discord Webhook を使ってiPhoneに通知を送る
 
-v5.2変更点:
-  - 日付表示を datetime.now(JST) に修正（UTC日付ズレ修正）
+v5.3変更点:
+  - 参考価格表示を2段階利確（target1/target2）に対応
+  - エントリーラベルを「寄り付き想定」に変更
+  - ATR・ピボット情報を表示
 """
 
 import requests
@@ -58,7 +60,6 @@ COLOR_BLUE   = 0x33B5E5
 
 
 def build_morning_payloads(candidates: list, market_ctx: dict) -> list:
-    # JSTで日付を取得（修正箇所）
     today   = datetime.now(JST).strftime("%Y/%m/%d")
     bias    = market_ctx.get("market_bias", "中立")
     ms      = market_ctx.get("market_score", 0)
@@ -77,6 +78,7 @@ def build_morning_payloads(candidates: list, market_ctx: dict) -> list:
 
     payloads = []
 
+    # ── Embed①：市場環境サマリー ──
     market_embed = {
         "title": f"📈 株シグナル {today} 朝8:00",
         "color": color,
@@ -125,6 +127,7 @@ def build_morning_payloads(candidates: list, market_ctx: dict) -> list:
     })
     payloads.append({"embeds": [market_embed]})
 
+    # ── Embed②以降：銘柄1件ずつ ──
     medals = ["🥇", "🥈", "🥉", "4️⃣", "5️⃣"]
     for i, c in enumerate(candidates):
         medal = medals[i] if i < len(medals) else f"{i+1}."
@@ -145,6 +148,10 @@ def build_morning_payloads(candidates: list, market_ctx: dict) -> list:
         if ind.get("perfect_order"):
             reasons.append("移動平均完全順列")
 
+        # ATR情報（あれば表示）
+        atr_str   = f"  ATR: `{tgt.get('atr','-')}円`" if tgt.get("atr") else ""
+        pivot_str = f"  ピボット: `{tgt.get('pivot','-')}円`" if tgt.get("pivot") else ""
+
         embed = {
             "title": f"{medal} {c['name']}（{c['code']}）",
             "description": f"**信頼度: {score:.0f}%**  `{bar}`",
@@ -163,10 +170,11 @@ def build_morning_payloads(candidates: list, market_ctx: dict) -> list:
                 {
                     "name": "参考価格",
                     "value": (
-                        f"▶ エントリー: `{tgt.get('entry',0):,.0f}円`\n"
-                        f"✅ 利確目標: `{tgt.get('target',0):,.0f}円` (+1.5%)\n"
-                        f"🛑 損切ライン: `{tgt.get('stop',0):,.0f}円` (-0.7%)\n"
-                        f"RR比: `{tgt.get('rr_ratio','-')}`"
+                        f"▶ 寄り付き想定: `{tgt.get('entry',0):,.0f}円`\n"
+                        f"✅ 利確①(R1): `{tgt.get('target1',0):,.0f}円` ← 半分はここで\n"
+                        f"🎯 利確②(R2): `{tgt.get('target2',0):,.0f}円` ← 残りを引っ張る\n"
+                        f"🛑 損切(ATR): `{tgt.get('stop',0):,.0f}円`\n"
+                        f"RR比: `{tgt.get('rr_ratio','-')}`{atr_str}"
                     ),
                     "inline": True
                 },
@@ -191,7 +199,6 @@ def build_monitor_payloads(
 ) -> tuple[list, bool]:
     from monitor import SIGNAL_STRENGTHEN, SIGNAL_WEAKEN, SIGNAL_EXIT
 
-    # JSTで時刻を取得（修正箇所）
     now        = datetime.now(JST).strftime("%H:%M")
     label      = "前場レビュー" if mode == "midmorning" else "後場シグナル"
     bias       = market_ctx.get("market_bias", "中立")
@@ -240,7 +247,7 @@ def build_monitor_payloads(
                         "value": (
                             f"現在値: `{c['current_close']:,.0f}円`\n"
                             f"朝比: `{'+'if diff>=0 else ''}{diff_pct:.1f}%`\n"
-                            f"利確目標: `{c['target_price']:,.0f}円`\n"
+                            f"利確①(R1): `{c.get('target_price',0):,.0f}円`\n"
                             f"損切ライン: `{c['stop_price']:,.0f}円`"
                         ),
                         "inline": True
@@ -279,9 +286,11 @@ def build_monitor_payloads(
                     {
                         "name": "参考価格",
                         "value": (
-                            f"エントリー: `{tgt.get('entry',0):,.0f}円`\n"
-                            f"利確: `{tgt.get('target',0):,.0f}円`\n"
-                            f"損切: `{tgt.get('stop',0):,.0f}円`"
+                            f"寄り付き想定: `{tgt.get('entry',0):,.0f}円`\n"
+                            f"利確①(R1): `{tgt.get('target1',0):,.0f}円`\n"
+                            f"利確②(R2): `{tgt.get('target2',0):,.0f}円`\n"
+                            f"損切(ATR): `{tgt.get('stop',0):,.0f}円`\n"
+                            f"RR比: `{tgt.get('rr_ratio','-')}`"
                         ),
                         "inline": True
                     }
@@ -296,7 +305,6 @@ def build_monitor_payloads(
 
 
 def build_skip_payloads(market_ctx: dict) -> list:
-    # JSTで日付を取得（修正箇所）
     today   = datetime.now(JST).strftime("%Y/%m/%d")
     ms      = market_ctx.get("market_score", 0)
     nk      = market_ctx.get("nikkei", {})

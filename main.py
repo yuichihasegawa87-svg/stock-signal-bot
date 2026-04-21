@@ -1,23 +1,16 @@
 """
-main.py v5.1
+main.py v5.3
 Discord Webhook通知版
 
---mode morning    : 朝8時のシグナル生成＆Discord通知
---mode midmorning : 前場10:30の監視＆Discord通知（変化ありのみ）
---mode afternoon  : 後場13:30のシグナル更新＆Discord通知
-
-v5.1変更点:
-  - 見送り判定を「弱気 + has_major_event」から
-    「弱気 + event_impact == HIGH」に変更
-    → 日本株への影響が大きい指標のある日のみ見送りとなる
-    → カナダCPI等の影響軽微な指標では見送りにならない
+v5.3変更点:
+  - run_screening() で calc_entry_targets が空dict（RR比1.5未満）の場合に候補から除外
 """
 
 import argparse
 import json
 import os
 import sys
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 
 from market_context import get_market_context
 from screener import get_jquants_access_token, screen_candidates
@@ -29,6 +22,7 @@ from notifier import (
     build_monitor_payloads
 )
 
+JST = timezone(timedelta(hours=9))
 
 TOP_CANDIDATES = 5
 MIN_SCORE      = 50
@@ -45,6 +39,12 @@ def run_screening(market_ctx: dict) -> list:
         row_dict = row.to_dict()
         result   = calculate_score(row_dict, market_ctx["market_score"])
         targets  = calc_entry_targets(row_dict)
+
+        # RR比1.5未満は空dictが返るため除外
+        if not targets:
+            print(f"  {row_dict.get('code','')} RR比不足のため除外")
+            continue
+
         if result["score"] >= MIN_SCORE:
             scored.append({
                 "code":             row_dict["code"],
@@ -70,7 +70,7 @@ def main():
     args = parser.parse_args()
 
     print(f"{'='*40}")
-    print(f"実行モード: {args.mode}  {datetime.now().strftime('%H:%M')}")
+    print(f"実行モード: {args.mode}  {datetime.now(JST).strftime('%H:%M')} JST")
     print(f"{'='*40}")
 
     market_ctx = get_market_context()
@@ -83,13 +83,12 @@ def main():
     if args.mode == "morning":
 
         # 見送り条件：弱気相場 かつ 日本株への影響がHIGHな指標がある日のみ
-        # MEDIUMは注意喚起のみで銘柄通知は継続する
         if market_ctx["market_bias"] == "弱気" and market_ctx.get("event_impact") == "HIGH":
             from notifier import build_skip_payloads
             send_discord_messages(build_skip_payloads(market_ctx))
             with open("morning_result.json", "w", encoding="utf-8") as f:
                 json.dump({
-                    "timestamp":  datetime.now().isoformat(),
+                    "timestamp":  datetime.now(JST).isoformat(),
                     "market_ctx": market_ctx,
                     "candidates": []
                 }, f, ensure_ascii=False, indent=2)
@@ -108,7 +107,7 @@ def main():
             sys.exit(1)
 
         morning_data = {
-            "timestamp":  datetime.now().isoformat(),
+            "timestamp":  datetime.now(JST).isoformat(),
             "market_ctx": market_ctx,
             "candidates": candidates
         }
