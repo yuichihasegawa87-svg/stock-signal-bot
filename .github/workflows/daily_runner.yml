@@ -1,0 +1,24 @@
+name: 🕗 デイリー自動実行（朝・前場・後場）
+
+on:
+  schedule:
+    - cron: '50 22 * * 0-4'  # JST 07:50（月〜金）← 08:00より10分早く起動
+  workflow_dispatch:
+
+jobs:
+  daily-runner:
+    runs-on: ubuntu-latest
+    timeout-minutes: 390  # 最大6.5時間（07:50〜14:20まで）
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: 依存パッケージをインストール
+        run: pip install -r requirements.txt
+      - name: デイリースケジューラを起動
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          FINNHUB_API_KEY: ${{ secrets.FINNHUB_API_KEY }}
+        run: python daily_runner.py
