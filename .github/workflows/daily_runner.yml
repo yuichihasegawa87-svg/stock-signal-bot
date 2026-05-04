@@ -8,15 +8,28 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 40
 
+    permissions:
+      contents: write
+
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+
       - name: 依存パッケージをインストール
         run: pip install -r requirements.txt
+
       - name: デイリースケジューラを起動
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           FINNHUB_API_KEY: ${{ secrets.FINNHUB_API_KEY }}
         run: python daily_runner.py
+
+      - name: morning_result.json をコミット（朝モードのみ）
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add morning_result.json 2>/dev/null || true
+          git diff --staged --quiet && echo "変更なし" || git commit -m "📊 朝のシグナル結果を保存 $(date '+%Y-%m-%d')" && git push
