@@ -1,0 +1,27 @@
+{
+  "timestamp": "2026-05-08T08:01:06.473710+09:00",
+  "market_ctx": {
+    "nikkei": {
+      "price": 59513.0,
+      "change_pct": 0.38
+    },
+    "usdjpy": {
+      "price": 156.88,
+      "change_pct": 0.24
+    },
+    "sp500": {
+      "price": 7337.0,
+      "change_pct": -0.38
+    },
+    "nasdaq": {
+      "price": 25806.0,
+      "change_pct": -0.13
+    },
+    "has_major_event": true,
+    "event_impact": "MEDIUM",
+    "event_summary": "🟡 日本株への影響：**中程度**\n\n🌐 【注意】 Unemployment Rate\n🇺🇸 【注意】 Unemployment Rate\n\n日本株への直接影響は限定的ですが、方向感に影響する可能性があります。\n発表後の値動きを確認してからエントリーを判断することを推奨します。",
+    "market_score": 20,
+    "market_bias": "中立"
+  },
+  "candidates": []
+}
