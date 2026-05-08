@@ -1,27 +1,60 @@
 {
-  "timestamp": "2026-05-08T08:01:06.473710+09:00",
+  "timestamp": "2026-05-09T08:01:07.547421+09:00",
   "market_ctx": {
     "nikkei": {
-      "price": 59513.0,
-      "change_pct": 0.38
+      "price": 62834.0,
+      "change_pct": 5.58
     },
     "usdjpy": {
-      "price": 156.88,
-      "change_pct": 0.24
+      "price": 156.62,
+      "change_pct": 0.07
     },
     "sp500": {
-      "price": 7337.0,
-      "change_pct": -0.38
+      "price": 7399.0,
+      "change_pct": 0.84
     },
     "nasdaq": {
-      "price": 25806.0,
-      "change_pct": -0.13
+      "price": 26247.0,
+      "change_pct": 1.71
     },
-    "has_major_event": true,
-    "event_impact": "MEDIUM",
-    "event_summary": "🟡 日本株への影響：**中程度**\n\n🌐 【注意】 Unemployment Rate\n🇺🇸 【注意】 Unemployment Rate\n\n日本株への直接影響は限定的ですが、方向感に影響する可能性があります。\n発表後の値動きを確認してからエントリーを判断することを推奨します。",
-    "market_score": 20,
-    "market_bias": "中立"
+    "has_major_event": false,
+    "event_impact": "NONE",
+    "event_summary": "",
+    "market_score": 40,
+    "market_bias": "強気"
   },
-  "candidates": []
+  "candidates": [
+    {
+      "code": "6594.T",
+      "name": "日本電産（ニデック）",
+      "sector": "精密機器",
+      "close": 2607.0,
+      "price_change_pct": 0.54,
+      "volume_ratio": 1.48,
+      "score": 59.0,
+      "indicators": {
+        "volume_ratio": 1.48,
+        "volume_points": 10,
+        "price_change_pct": 0.54,
+        "rsi": 74.4,
+        "macd": 86.7458,
+        "macd_signal": 64.0836,
+        "macd_golden_cross": false,
+        "bb_position": 100.3,
+        "ma5": 2473.0,
+        "ma25": 2302.0,
+        "perfect_order": true
+      },
+      "targets": {
+        "entry": 2615,
+        "target1": 2678,
+        "target2": 2763,
+        "stop": 2558,
+        "rr_ratio": 1.11,
+        "pivot": 2547,
+        "s1": 2462,
+        "atr": 114
+      }
+    }
+  ]
 }
