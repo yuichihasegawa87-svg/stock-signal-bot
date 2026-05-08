@@ -25,7 +25,7 @@ from notifier import (
 JST = timezone(timedelta(hours=9))
 
 TOP_CANDIDATES = 5
-MIN_SCORE      = 50
+MIN_SCORE      = 40
 SCREEN_TOP_N   = 30
 
 
