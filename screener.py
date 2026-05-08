@@ -565,7 +565,7 @@ def screen_candidates(top_n: int = 20) -> pd.DataFrame:
             # 条件①: 出来高が20日平均の1.5倍以上
             # 条件②: 前日比 +0.5% 以上
             # 条件③: 陽線（始値 < 終値）
-            if not (volume_ratio >= 1.5 and price_change_pct >= 0.5 and is_bullish):
+            if not (volume_ratio >= 1.3 and price_change_pct >= 0.5 and is_bullish):
                 continue
 
             # 事前スコア（scorer.pyに渡す前の簡易点数）
