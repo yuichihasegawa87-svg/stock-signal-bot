@@ -1,21 +1,21 @@
 {
-  "timestamp": "2026-05-11T08:24:21.332025+09:00",
+  "timestamp": "2026-05-12T08:01:07.435254+09:00",
   "market_ctx": {
     "nikkei": {
       "price": 62714.0,
       "change_pct": -0.19
     },
     "usdjpy": {
-      "price": 156.88,
-      "change_pct": 0.03
+      "price": 157.19,
+      "change_pct": 0.21
     },
     "sp500": {
-      "price": 7399.0,
-      "change_pct": 0.84
+      "price": 7413.0,
+      "change_pct": 0.19
     },
     "nasdaq": {
-      "price": 26247.0,
-      "change_pct": 1.71
+      "price": 26274.0,
+      "change_pct": 0.1
     },
     "has_major_event": false,
     "event_impact": "NONE",
@@ -25,35 +25,35 @@
   },
   "candidates": [
     {
-      "code": "6594.T",
-      "name": "日本電産（ニデック）",
-      "sector": "精密機器",
-      "close": 2607.0,
-      "price_change_pct": 0.54,
-      "volume_ratio": 1.48,
-      "score": 54.0,
+      "code": "2914.T",
+      "name": "日本たばこ産業",
+      "sector": "食品",
+      "close": 6164.0,
+      "price_change_pct": 6.85,
+      "volume_ratio": 3.1,
+      "score": 90.0,
       "indicators": {
-        "volume_ratio": 1.48,
-        "volume_points": 10,
-        "price_change_pct": 0.54,
-        "rsi": 74.4,
-        "macd": 86.7458,
-        "macd_signal": 64.0836,
-        "macd_golden_cross": false,
-        "bb_position": 100.3,
-        "ma5": 2473.0,
-        "ma25": 2302.0,
+        "volume_ratio": 3.1,
+        "volume_points": 20,
+        "price_change_pct": 6.85,
+        "rsi": 60.9,
+        "macd": 8.5062,
+        "macd_signal": -10.8381,
+        "macd_golden_cross": true,
+        "bb_position": 109.6,
+        "ma5": 5924.0,
+        "ma25": 5918.0,
         "perfect_order": true
       },
       "targets": {
-        "entry": 2615,
-        "target1": 2678,
-        "target2": 2763,
-        "stop": 2558,
-        "rr_ratio": 1.11,
-        "pivot": 2547,
-        "s1": 2462,
-        "atr": 114
+        "entry": 6182,
+        "target1": 6244,
+        "target2": 6369,
+        "stop": 6121,
+        "rr_ratio": 1.02,
+        "pivot": 5800,
+        "s1": 5738,
+        "atr": 123
       }
     }
   ]
