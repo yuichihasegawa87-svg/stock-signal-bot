@@ -1,60 +1,27 @@
 {
-  "timestamp": "2026-05-12T08:01:07.435254+09:00",
+  "timestamp": "2026-05-13T08:01:07.067991+09:00",
   "market_ctx": {
     "nikkei": {
-      "price": 62714.0,
-      "change_pct": -0.19
+      "price": 62418.0,
+      "change_pct": -0.47
     },
     "usdjpy": {
-      "price": 157.19,
-      "change_pct": 0.21
+      "price": 157.59,
+      "change_pct": 0.23
     },
     "sp500": {
-      "price": 7413.0,
-      "change_pct": 0.19
+      "price": 7401.0,
+      "change_pct": -0.16
     },
     "nasdaq": {
-      "price": 26274.0,
-      "change_pct": 0.1
+      "price": 26088.0,
+      "change_pct": -0.71
     },
-    "has_major_event": false,
-    "event_impact": "NONE",
-    "event_summary": "",
-    "market_score": 30,
-    "market_bias": "強気"
+    "has_major_event": true,
+    "event_impact": "MEDIUM",
+    "event_summary": "🟡 日本株への影響：**中程度**\n\n🌐 【注意】 Unemployment Rate\n\n日本株への直接影響は限定的ですが、方向感に影響する可能性があります。\n発表後の値動きを確認してからエントリーを判断することを推奨します。",
+    "market_score": 10,
+    "market_bias": "弱気"
   },
-  "candidates": [
-    {
-      "code": "2914.T",
-      "name": "日本たばこ産業",
-      "sector": "食品",
-      "close": 6164.0,
-      "price_change_pct": 6.85,
-      "volume_ratio": 3.1,
-      "score": 90.0,
-      "indicators": {
-        "volume_ratio": 3.1,
-        "volume_points": 20,
-        "price_change_pct": 6.85,
-        "rsi": 60.9,
-        "macd": 8.5062,
-        "macd_signal": -10.8381,
-        "macd_golden_cross": true,
-        "bb_position": 109.6,
-        "ma5": 5924.0,
-        "ma25": 5918.0,
-        "perfect_order": true
-      },
-      "targets": {
-        "entry": 6182,
-        "target1": 6244,
-        "target2": 6369,
-        "stop": 6121,
-        "rr_ratio": 1.02,
-        "pivot": 5800,
-        "s1": 5738,
-        "atr": 123
-      }
-    }
-  ]
+  "candidates": []
 }
