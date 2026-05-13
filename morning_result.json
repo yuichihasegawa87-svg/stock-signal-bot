@@ -1,27 +1,60 @@
 {
-  "timestamp": "2026-05-13T08:01:07.067991+09:00",
+  "timestamp": "2026-05-14T08:01:04.583522+09:00",
   "market_ctx": {
     "nikkei": {
-      "price": 62418.0,
-      "change_pct": -0.47
+      "price": 62743.0,
+      "change_pct": 0.52
     },
     "usdjpy": {
-      "price": 157.59,
-      "change_pct": 0.23
+      "price": 157.8,
+      "change_pct": 0.08
     },
     "sp500": {
-      "price": 7401.0,
-      "change_pct": -0.16
+      "price": 7444.0,
+      "change_pct": 0.58
     },
     "nasdaq": {
-      "price": 26088.0,
-      "change_pct": -0.71
+      "price": 26402.0,
+      "change_pct": 1.2
     },
     "has_major_event": true,
-    "event_impact": "MEDIUM",
-    "event_summary": "🟡 日本株への影響：**中程度**\n\n🌐 【注意】 Unemployment Rate\n\n日本株への直接影響は限定的ですが、方向感に影響する可能性があります。\n発表後の値動きを確認してからエントリーを判断することを推奨します。",
-    "market_score": 10,
-    "market_bias": "弱気"
+    "event_impact": "HIGH",
+    "event_summary": "🔴 日本株への影響：**大きい**\n\n🌐 【要注意】 GDP Growth Rate QoQ Prel\n🌐 【要注意】 GDP Growth Rate YoY Prel\n🌐 【要注意】 GDP MoM\n🇯🇵 【要注意】 GDP Growth Rate QoQ Prel\n🇺🇸 【注意】 Retail Sales MoM\n\n発表直後にドル円・日経先物が大きく動く傾向があります。\n発表時刻をまたぐポジションは損切りラインを容易に超えるリスクがあります。",
+    "market_score": 40,
+    "market_bias": "強気"
   },
-  "candidates": []
+  "candidates": [
+    {
+      "code": "7267.T",
+      "name": "ホンダ",
+      "sector": "自動車",
+      "close": 1272.0,
+      "price_change_pct": 1.31,
+      "volume_ratio": 1.37,
+      "score": 41.0,
+      "indicators": {
+        "volume_ratio": 1.37,
+        "volume_points": 10,
+        "price_change_pct": 1.31,
+        "rsi": 41.8,
+        "macd": -12.3541,
+        "macd_signal": -10.5008,
+        "macd_golden_cross": false,
+        "bb_position": 37.6,
+        "ma5": 1261.0,
+        "ma25": 1282.0,
+        "perfect_order": false
+      },
+      "targets": {
+        "entry": 1276,
+        "target1": 1289,
+        "target2": 1315,
+        "stop": 1263,
+        "rr_ratio": 1.0,
+        "pivot": 1251,
+        "s1": 1245,
+        "atr": 26
+      }
+    }
+  ]
 }
