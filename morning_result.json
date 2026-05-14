@@ -1,60 +1,27 @@
 {
-  "timestamp": "2026-05-14T08:01:04.583522+09:00",
+  "timestamp": "2026-05-15T08:01:01.871281+09:00",
   "market_ctx": {
     "nikkei": {
-      "price": 62743.0,
-      "change_pct": 0.52
+      "price": 63272.0,
+      "change_pct": 0.84
     },
     "usdjpy": {
-      "price": 157.8,
-      "change_pct": 0.08
+      "price": 158.37,
+      "change_pct": 0.33
     },
     "sp500": {
-      "price": 7444.0,
-      "change_pct": 0.58
+      "price": 7501.0,
+      "change_pct": 0.77
     },
     "nasdaq": {
-      "price": 26402.0,
-      "change_pct": 1.2
+      "price": 26635.0,
+      "change_pct": 0.88
     },
-    "has_major_event": true,
-    "event_impact": "HIGH",
-    "event_summary": "🔴 日本株への影響：**大きい**\n\n🌐 【要注意】 GDP Growth Rate QoQ Prel\n🌐 【要注意】 GDP Growth Rate YoY Prel\n🌐 【要注意】 GDP MoM\n🇯🇵 【要注意】 GDP Growth Rate QoQ Prel\n🇺🇸 【注意】 Retail Sales MoM\n\n発表直後にドル円・日経先物が大きく動く傾向があります。\n発表時刻をまたぐポジションは損切りラインを容易に超えるリスクがあります。",
+    "has_major_event": false,
+    "event_impact": "NONE",
+    "event_summary": "",
     "market_score": 40,
     "market_bias": "強気"
   },
-  "candidates": [
-    {
-      "code": "7267.T",
-      "name": "ホンダ",
-      "sector": "自動車",
-      "close": 1272.0,
-      "price_change_pct": 1.31,
-      "volume_ratio": 1.37,
-      "score": 41.0,
-      "indicators": {
-        "volume_ratio": 1.37,
-        "volume_points": 10,
-        "price_change_pct": 1.31,
-        "rsi": 41.8,
-        "macd": -12.3541,
-        "macd_signal": -10.5008,
-        "macd_golden_cross": false,
-        "bb_position": 37.6,
-        "ma5": 1261.0,
-        "ma25": 1282.0,
-        "perfect_order": false
-      },
-      "targets": {
-        "entry": 1276,
-        "target1": 1289,
-        "target2": 1315,
-        "stop": 1263,
-        "rr_ratio": 1.0,
-        "pivot": 1251,
-        "s1": 1245,
-        "atr": 26
-      }
-    }
-  ]
+  "candidates": []
 }
