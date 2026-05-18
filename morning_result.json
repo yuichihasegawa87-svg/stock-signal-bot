@@ -1,26 +1,26 @@
 {
-  "timestamp": "2026-05-16T08:01:04.295610+09:00",
+  "timestamp": "2026-05-19T08:01:07.833364+09:00",
   "market_ctx": {
     "nikkei": {
-      "price": 62654.0,
-      "change_pct": -0.98
+      "price": 61409.0,
+      "change_pct": -1.99
     },
     "usdjpy": {
-      "price": 158.73,
-      "change_pct": 0.56
+      "price": 158.83,
+      "change_pct": -0.01
     },
     "sp500": {
-      "price": 7408.0,
-      "change_pct": -1.24
+      "price": 7403.0,
+      "change_pct": -0.07
     },
     "nasdaq": {
-      "price": 26225.0,
-      "change_pct": -1.54
+      "price": 26091.0,
+      "change_pct": -0.51
     },
-    "has_major_event": false,
-    "event_impact": "NONE",
-    "event_summary": "",
-    "market_score": 10,
+    "has_major_event": true,
+    "event_impact": "MEDIUM",
+    "event_summary": "🟡 日本株への影響：**中程度**\n\n🌐 【注意】 Unemployment Rate\n\n日本株への直接影響は限定的ですが、方向感に影響する可能性があります。\n発表後の値動きを確認してからエントリーを判断することを推奨します。",
+    "market_score": 0,
     "market_bias": "弱気"
   },
   "candidates": []
