@@ -1,27 +1,27 @@
 {
-  "timestamp": "2026-05-21T08:01:08.500015+09:00",
+  "timestamp": "2026-05-22T08:01:02.892825+09:00",
   "market_ctx": {
     "nikkei": {
-      "price": 60551.0,
-      "change_pct": -0.44
+      "price": 59804.0,
+      "change_pct": -1.23
     },
     "usdjpy": {
-      "price": 158.84,
-      "change_pct": -0.13
+      "price": 158.99,
+      "change_pct": 0.06
     },
     "sp500": {
-      "price": 7433.0,
-      "change_pct": 1.08
+      "price": 7446.0,
+      "change_pct": 0.17
     },
     "nasdaq": {
-      "price": 26270.0,
-      "change_pct": 1.54
+      "price": 26293.0,
+      "change_pct": 0.09
     },
     "has_major_event": true,
     "event_impact": "MEDIUM",
-    "event_summary": "🟡 日本株への影響：**中程度**\n\n🌐 【注意】 S&P Global Manufacturing PMI Flash\n🌐 【注意】 S&P Global Manufacturing PMI Flash\n🌐 【注意】 S&P Global Services PMI Flash\n\n日本株への直接影響は限定的ですが、方向感に影響する可能性があります。\n発表後の値動きを確認してからエントリーを判断することを推奨します。",
-    "market_score": 20,
-    "market_bias": "中立"
+    "event_summary": "🟡 日本株への影響：**中程度**\n\n🌐 【注意】 Retail Sales MoM\n\n日本株への直接影響は限定的ですが、方向感に影響する可能性があります。\n発表後の値動きを確認してからエントリーを判断することを推奨します。",
+    "market_score": 30,
+    "market_bias": "強気"
   },
   "candidates": []
 }
