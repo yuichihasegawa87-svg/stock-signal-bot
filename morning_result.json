@@ -1,13 +1,13 @@
 {
-  "timestamp": "2026-05-23T08:00:56.922274+09:00",
+  "timestamp": "2026-05-26T08:01:01.748749+09:00",
   "market_ctx": {
     "nikkei": {
-      "price": 61684.0,
-      "change_pct": 3.14
+      "price": 63339.0,
+      "change_pct": 2.68
     },
     "usdjpy": {
-      "price": 159.15,
-      "change_pct": 0.17
+      "price": 158.91,
+      "change_pct": -0.02
     },
     "sp500": {
       "price": 7473.0,
@@ -20,7 +20,7 @@
     "has_major_event": false,
     "event_impact": "NONE",
     "event_summary": "",
-    "market_score": 40,
+    "market_score": 30,
     "market_bias": "強気"
   },
   "candidates": []
