@@ -1,27 +1,60 @@
 {
-  "timestamp": "2026-05-26T08:01:01.748749+09:00",
+  "timestamp": "2026-05-27T08:01:02.065238+09:00",
   "market_ctx": {
     "nikkei": {
-      "price": 63339.0,
-      "change_pct": 2.68
+      "price": 65158.0,
+      "change_pct": 2.87
     },
     "usdjpy": {
-      "price": 158.91,
-      "change_pct": -0.02
+      "price": 159.26,
+      "change_pct": 0.19
     },
     "sp500": {
-      "price": 7473.0,
-      "change_pct": 0.37
+      "price": 7519.0,
+      "change_pct": 0.61
     },
     "nasdaq": {
-      "price": 26344.0,
-      "change_pct": 0.19
+      "price": 26656.0,
+      "change_pct": 1.19
     },
     "has_major_event": false,
     "event_impact": "NONE",
     "event_summary": "",
-    "market_score": 30,
+    "market_score": 40,
     "market_bias": "強気"
   },
-  "candidates": []
+  "candidates": [
+    {
+      "code": "6981.T",
+      "name": "村田製作所",
+      "sector": "電子部品",
+      "close": 8077.0,
+      "price_change_pct": 1.88,
+      "volume_ratio": 1.54,
+      "score": 58.0,
+      "indicators": {
+        "volume_ratio": 1.54,
+        "volume_points": 10,
+        "price_change_pct": 1.88,
+        "rsi": 93.9,
+        "macd": 782.5467,
+        "macd_signal": 610.6569,
+        "macd_golden_cross": false,
+        "bb_position": 104.9,
+        "ma5": 7205.0,
+        "ma25": 5766.0,
+        "perfect_order": true
+      },
+      "targets": {
+        "entry": 8101,
+        "target1": 8456,
+        "target2": 8983,
+        "stop": 7869,
+        "rr_ratio": 1.53,
+        "pivot": 7885,
+        "s1": 7358,
+        "atr": 464
+      }
+    }
+  ]
 }
