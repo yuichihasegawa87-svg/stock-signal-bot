@@ -1,60 +1,27 @@
 {
-  "timestamp": "2026-05-27T08:01:02.065238+09:00",
+  "timestamp": "2026-05-28T08:01:10.371994+09:00",
   "market_ctx": {
     "nikkei": {
-      "price": 65158.0,
-      "change_pct": 2.87
+      "price": 64996.0,
+      "change_pct": -0.25
     },
     "usdjpy": {
-      "price": 159.26,
-      "change_pct": 0.19
+      "price": 159.5,
+      "change_pct": 0.16
     },
     "sp500": {
-      "price": 7519.0,
-      "change_pct": 0.61
+      "price": 7520.0,
+      "change_pct": 0.02
     },
     "nasdaq": {
-      "price": 26656.0,
-      "change_pct": 1.19
+      "price": 26675.0,
+      "change_pct": 0.07
     },
-    "has_major_event": false,
-    "event_impact": "NONE",
-    "event_summary": "",
-    "market_score": 40,
+    "has_major_event": true,
+    "event_impact": "HIGH",
+    "event_summary": "🔴 日本株への影響：**大きい**\n\n🇺🇸 【要注意】 GDP Growth Rate QoQ 2nd Est\n🇺🇸 【注意】 Core PCE Price Index MoM\n\n発表直後にドル円・日経先物が大きく動く傾向があります。\n発表時刻をまたぐポジションは損切りラインを容易に超えるリスクがあります。",
+    "market_score": 30,
     "market_bias": "強気"
   },
-  "candidates": [
-    {
-      "code": "6981.T",
-      "name": "村田製作所",
-      "sector": "電子部品",
-      "close": 8077.0,
-      "price_change_pct": 1.88,
-      "volume_ratio": 1.54,
-      "score": 58.0,
-      "indicators": {
-        "volume_ratio": 1.54,
-        "volume_points": 10,
-        "price_change_pct": 1.88,
-        "rsi": 93.9,
-        "macd": 782.5467,
-        "macd_signal": 610.6569,
-        "macd_golden_cross": false,
-        "bb_position": 104.9,
-        "ma5": 7205.0,
-        "ma25": 5766.0,
-        "perfect_order": true
-      },
-      "targets": {
-        "entry": 8101,
-        "target1": 8456,
-        "target2": 8983,
-        "stop": 7869,
-        "rr_ratio": 1.53,
-        "pivot": 7885,
-        "s1": 7358,
-        "atr": 464
-      }
-    }
-  ]
+  "candidates": []
 }
