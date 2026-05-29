@@ -1,27 +1,60 @@
 {
-  "timestamp": "2026-05-29T08:01:11.260171+09:00",
+  "timestamp": "2026-05-30T08:01:06.337269+09:00",
   "market_ctx": {
     "nikkei": {
-      "price": 64999.0,
-      "change_pct": 0.01
+      "price": 64693.0,
+      "change_pct": -0.47
     },
     "usdjpy": {
-      "price": 159.24,
-      "change_pct": -0.21
+      "price": 159.26,
+      "change_pct": -0.01
     },
     "sp500": {
-      "price": 7564.0,
-      "change_pct": 0.58
+      "price": 7580.0,
+      "change_pct": 0.22
     },
     "nasdaq": {
-      "price": 26917.0,
-      "change_pct": 0.91
+      "price": 26973.0,
+      "change_pct": 0.2
     },
-    "has_major_event": true,
-    "event_impact": "HIGH",
-    "event_summary": "🔴 日本株への影響：**大きい**\n\n🌐 【要注意】 GDP Growth Rate YoY\n🌐 【要注意】 GDP Growth Rate Annualized\n🌐 【要注意】 GDP Growth Rate QoQ\n\n発表直後にドル円・日経先物が大きく動く傾向があります。\n発表時刻をまたぐポジションは損切りラインを容易に超えるリスクがあります。",
-    "market_score": 30,
-    "market_bias": "強気"
+    "has_major_event": false,
+    "event_impact": "NONE",
+    "event_summary": "",
+    "market_score": 20,
+    "market_bias": "中立"
   },
-  "candidates": []
+  "candidates": [
+    {
+      "code": "2914.T",
+      "name": "日本たばこ産業",
+      "sector": "食品",
+      "close": 6167.0,
+      "price_change_pct": 1.13,
+      "volume_ratio": 2.57,
+      "score": 68.0,
+      "indicators": {
+        "volume_ratio": 2.57,
+        "volume_points": 20,
+        "price_change_pct": 1.13,
+        "rsi": 50.2,
+        "macd": 51.2166,
+        "macd_signal": 63.2722,
+        "macd_golden_cross": false,
+        "bb_position": 56.9,
+        "ma5": 6119.0,
+        "ma25": 6048.0,
+        "perfect_order": true
+      },
+      "targets": {
+        "entry": 6186,
+        "target1": 6248,
+        "target2": 6373,
+        "stop": 6132,
+        "rr_ratio": 1.15,
+        "pivot": 6130,
+        "s1": 6058,
+        "atr": 108
+      }
+    }
+  ]
 }
