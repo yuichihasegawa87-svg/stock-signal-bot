@@ -1,25 +1,25 @@
 {
-  "timestamp": "2026-06-02T08:01:04.091621+09:00",
+  "timestamp": "2026-06-03T08:01:06.854716+09:00",
   "market_ctx": {
     "nikkei": {
-      "price": 66330.0,
-      "change_pct": 2.53
+      "price": 66934.0,
+      "change_pct": 0.91
     },
     "usdjpy": {
-      "price": 159.65,
-      "change_pct": 0.19
+      "price": 159.96,
+      "change_pct": 0.2
     },
     "sp500": {
-      "price": 7600.0,
-      "change_pct": 0.26
+      "price": 7610.0,
+      "change_pct": 0.13
     },
     "nasdaq": {
-      "price": 27087.0,
-      "change_pct": 0.42
+      "price": 27094.0,
+      "change_pct": 0.03
     },
     "has_major_event": true,
-    "event_impact": "MEDIUM",
-    "event_summary": "🟡 日本株への影響：**中程度**\n\n🇺🇸 【注意】 JOLTs Job Openings\n\n日本株への直接影響は限定的ですが、方向感に影響する可能性があります。\n発表後の値動きを確認してからエントリーを判断することを推奨します。",
+    "event_impact": "HIGH",
+    "event_summary": "🔴 日本株への影響：**大きい**\n\n🌐 【要注意】 GDP Growth Rate QoQ\n🇺🇸 【注意】 ISM Services PMI\n\n発表直後にドル円・日経先物が大きく動く傾向があります。\n発表時刻をまたぐポジションは損切りラインを容易に超えるリスクがあります。",
     "market_score": 40,
     "market_bias": "強気"
   },
