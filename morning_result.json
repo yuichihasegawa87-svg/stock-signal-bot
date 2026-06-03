@@ -1,27 +1,27 @@
 {
-  "timestamp": "2026-06-03T08:01:06.854716+09:00",
+  "timestamp": "2026-06-04T08:01:10.408416+09:00",
   "market_ctx": {
     "nikkei": {
-      "price": 66934.0,
-      "change_pct": 0.91
+      "price": 66734.0,
+      "change_pct": -0.3
     },
     "usdjpy": {
-      "price": 159.96,
-      "change_pct": 0.2
+      "price": 159.91,
+      "change_pct": -0.04
     },
     "sp500": {
-      "price": 7610.0,
-      "change_pct": 0.13
+      "price": 7554.0,
+      "change_pct": -0.74
     },
     "nasdaq": {
-      "price": 27094.0,
-      "change_pct": 0.03
+      "price": 26854.0,
+      "change_pct": -0.89
     },
-    "has_major_event": true,
-    "event_impact": "HIGH",
-    "event_summary": "🔴 日本株への影響：**大きい**\n\n🌐 【要注意】 GDP Growth Rate QoQ\n🇺🇸 【注意】 ISM Services PMI\n\n発表直後にドル円・日経先物が大きく動く傾向があります。\n発表時刻をまたぐポジションは損切りラインを容易に超えるリスクがあります。",
-    "market_score": 40,
-    "market_bias": "強気"
+    "has_major_event": false,
+    "event_impact": "NONE",
+    "event_summary": "",
+    "market_score": 0,
+    "market_bias": "弱気"
   },
   "candidates": []
 }
