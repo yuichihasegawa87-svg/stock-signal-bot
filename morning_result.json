@@ -1,27 +1,27 @@
 {
-  "timestamp": "2026-06-09T08:01:09.174003+09:00",
+  "timestamp": "2026-06-10T08:01:06.248008+09:00",
   "market_ctx": {
     "nikkei": {
-      "price": 66588.0,
-      "change_pct": -1.31
+      "price": 64025.0,
+      "change_pct": -3.85
     },
     "usdjpy": {
-      "price": 160.16,
-      "change_pct": -0.1
+      "price": 160.4,
+      "change_pct": 0.14
     },
     "sp500": {
-      "price": 7406.0,
-      "change_pct": 0.3
+      "price": 7387.0,
+      "change_pct": -0.26
     },
     "nasdaq": {
-      "price": 25930.0,
-      "change_pct": 0.86
+      "price": 25679.0,
+      "change_pct": -0.97
     },
-    "has_major_event": false,
-    "event_impact": "NONE",
-    "event_summary": "",
-    "market_score": 20,
-    "market_bias": "中立"
+    "has_major_event": true,
+    "event_impact": "HIGH",
+    "event_summary": "🔴 日本株への影響：**大きい**\n\n🌐 【要注意】 BoC Interest Rate Decision\n\n発表直後にドル円・日経先物が大きく動く傾向があります。\n発表時刻をまたぐポジションは損切りラインを容易に超えるリスクがあります。",
+    "market_score": 10,
+    "market_bias": "弱気"
   },
   "candidates": []
 }
