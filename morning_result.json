@@ -1,27 +1,27 @@
 {
-  "timestamp": "2026-06-16T08:01:20.744536+09:00",
+  "timestamp": "2026-06-17T08:01:36.727332+09:00",
   "market_ctx": {
     "nikkei": {
-      "price": 66020.0,
-      "change_pct": 2.81
+      "price": 69318.0,
+      "change_pct": 4.99
     },
     "usdjpy": {
-      "price": 160.32,
-      "change_pct": 0.23
+      "price": 160.41,
+      "change_pct": 0.12
     },
     "sp500": {
-      "price": 7554.0,
-      "change_pct": 1.65
+      "price": 7511.0,
+      "change_pct": -0.57
     },
     "nasdaq": {
-      "price": 26684.0,
-      "change_pct": 3.07
+      "price": 26376.0,
+      "change_pct": -1.15
     },
     "has_major_event": false,
     "event_impact": "NONE",
     "event_summary": "",
-    "market_score": 40,
-    "market_bias": "強気"
+    "market_score": 20,
+    "market_bias": "中立"
   },
   "candidates": []
 }
