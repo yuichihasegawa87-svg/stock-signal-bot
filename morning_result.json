@@ -1,21 +1,21 @@
 {
-  "timestamp": "2026-07-14T08:01:36.161602+09:00",
+  "timestamp": "2026-07-15T08:01:45.441814+09:00",
   "market_ctx": {
     "nikkei": {
-      "price": 68558.0,
-      "change_pct": 1.2
+      "price": 67243.0,
+      "change_pct": -1.92
     },
     "usdjpy": {
-      "price": 162.43,
-      "change_pct": 0.34
+      "price": 162.24,
+      "change_pct": -0.12
     },
     "sp500": {
-      "price": 7515.0,
-      "change_pct": -0.79
+      "price": 7544.0,
+      "change_pct": 0.38
     },
     "nasdaq": {
-      "price": 25873.0,
-      "change_pct": -1.55
+      "price": 26107.0,
+      "change_pct": 0.9
     },
     "has_major_event": false,
     "event_impact": "NONE",
