@@ -1,59 +1,59 @@
 {
-  "timestamp": "2026-07-24T08:01:07.178226+09:00",
+  "timestamp": "2026-07-25T08:01:20.733439+09:00",
   "market_ctx": {
     "nikkei": {
-      "price": 66116.0,
-      "change_pct": -0.18
-    },
-    "usdjpy": {
-      "price": 163.84,
+      "price": 66423.0,
       "change_pct": 0.46
     },
+    "usdjpy": {
+      "price": 163.79,
+      "change_pct": 0.44
+    },
     "sp500": {
-      "price": 7408.0,
-      "change_pct": -1.21
+      "price": 7412.0,
+      "change_pct": 0.05
     },
     "nasdaq": {
-      "price": 25138.0,
-      "change_pct": -2.15
+      "price": 24976.0,
+      "change_pct": -0.64
     },
     "has_major_event": false,
     "event_impact": "NONE",
     "event_summary": "",
-    "market_score": 10,
-    "market_bias": "弱気"
+    "market_score": 30,
+    "market_bias": "強気"
   },
   "candidates": [
     {
       "code": "5401.T",
       "name": "日本製鉄",
       "sector": "鉄鋼",
-      "close": 608.0,
-      "price_change_pct": 1.47,
-      "volume_ratio": 1.45,
-      "score": 43.0,
+      "close": 617.0,
+      "price_change_pct": 1.5,
+      "volume_ratio": 1.87,
+      "score": 58.0,
       "indicators": {
-        "volume_ratio": 1.45,
-        "volume_points": 10,
-        "price_change_pct": 1.47,
-        "rsi": 88.3,
-        "macd": 11.8468,
-        "macd_signal": 5.9985,
+        "volume_ratio": 1.87,
+        "volume_points": 15,
+        "price_change_pct": 1.5,
+        "rsi": 88.6,
+        "macd": 13.7964,
+        "macd_signal": 7.3948,
         "macd_golden_cross": false,
-        "bb_position": 101.7,
-        "ma5": 594.0,
-        "ma25": 561.0,
+        "bb_position": 101.5,
+        "ma5": 602.0,
+        "ma25": 563.0,
         "perfect_order": true
       },
       "targets": {
-        "entry": 610,
-        "target1": 616,
-        "target2": 628,
-        "stop": 605,
+        "entry": 619,
+        "target1": 625,
+        "target2": 638,
+        "stop": 614,
         "rr_ratio": 1.2,
-        "pivot": 598,
-        "s1": 592,
-        "atr": 10
+        "pivot": 606,
+        "s1": 600,
+        "atr": 11
       }
     }
   ]
