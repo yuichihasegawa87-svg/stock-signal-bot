@@ -1,21 +1,21 @@
 {
-  "timestamp": "2026-07-25T08:01:20.733439+09:00",
+  "timestamp": "2026-07-28T08:01:07.097797+09:00",
   "market_ctx": {
     "nikkei": {
       "price": 66423.0,
       "change_pct": 0.46
     },
     "usdjpy": {
-      "price": 163.79,
-      "change_pct": 0.44
+      "price": 163.71,
+      "change_pct": 0.06
     },
     "sp500": {
-      "price": 7412.0,
-      "change_pct": 0.05
+      "price": 7413.0,
+      "change_pct": 0.07
     },
     "nasdaq": {
-      "price": 24976.0,
-      "change_pct": -0.64
+      "price": 24932.0,
+      "change_pct": -0.82
     },
     "has_major_event": false,
     "event_impact": "NONE",
@@ -25,34 +25,98 @@
   },
   "candidates": [
     {
-      "code": "5401.T",
-      "name": "日本製鉄",
-      "sector": "鉄鋼",
-      "close": 617.0,
-      "price_change_pct": 1.5,
-      "volume_ratio": 1.87,
-      "score": 58.0,
+      "code": "1925.T",
+      "name": "大和ハウス工業",
+      "sector": "建設",
+      "close": 4740.0,
+      "price_change_pct": 3.52,
+      "volume_ratio": 1.52,
+      "score": 80.0,
       "indicators": {
-        "volume_ratio": 1.87,
-        "volume_points": 15,
-        "price_change_pct": 1.5,
-        "rsi": 88.6,
-        "macd": 13.7964,
-        "macd_signal": 7.3948,
-        "macd_golden_cross": false,
-        "bb_position": 101.5,
-        "ma5": 602.0,
-        "ma25": 563.0,
+        "volume_ratio": 1.52,
+        "volume_points": 10,
+        "price_change_pct": 3.52,
+        "rsi": 67.7,
+        "macd": 75.1676,
+        "macd_signal": 71.3208,
+        "macd_golden_cross": true,
+        "bb_position": 109.4,
+        "ma5": 4626.0,
+        "ma25": 4506.0,
         "perfect_order": true
       },
       "targets": {
-        "entry": 619,
-        "target1": 625,
-        "target2": 638,
-        "stop": 614,
+        "entry": 4754,
+        "target1": 4802,
+        "target2": 4898,
+        "stop": 4715,
+        "rr_ratio": 1.23,
+        "pivot": 4565,
+        "s1": 4534,
+        "atr": 79
+      }
+    },
+    {
+      "code": "7270.T",
+      "name": "スバル",
+      "sector": "自動車",
+      "close": 2664.0,
+      "price_change_pct": 4.17,
+      "volume_ratio": 1.31,
+      "score": 75.0,
+      "indicators": {
+        "volume_ratio": 1.31,
+        "volume_points": 10,
+        "price_change_pct": 4.17,
+        "rsi": 58.5,
+        "macd": 36.6701,
+        "macd_signal": 23.8945,
+        "macd_golden_cross": false,
+        "bb_position": 100.2,
+        "ma5": 2601.0,
+        "ma25": 2496.0,
+        "perfect_order": true
+      },
+      "targets": {
+        "entry": 2672,
+        "target1": 2699,
+        "target2": 2753,
+        "stop": 2647,
+        "rr_ratio": 1.08,
+        "pivot": 2565,
+        "s1": 2536,
+        "atr": 51
+      }
+    },
+    {
+      "code": "5401.T",
+      "name": "日本製鉄",
+      "sector": "鉄鋼",
+      "close": 637.0,
+      "price_change_pct": 3.24,
+      "volume_ratio": 1.55,
+      "score": 60.0,
+      "indicators": {
+        "volume_ratio": 1.55,
+        "volume_points": 10,
+        "price_change_pct": 3.24,
+        "rsi": 89.7,
+        "macd": 17.6367,
+        "macd_signal": 10.3686,
+        "macd_golden_cross": false,
+        "bb_position": 107.6,
+        "ma5": 612.0,
+        "ma25": 567.0,
+        "perfect_order": true
+      },
+      "targets": {
+        "entry": 639,
+        "target1": 645,
+        "target2": 658,
+        "stop": 634,
         "rr_ratio": 1.2,
-        "pivot": 606,
-        "s1": 600,
+        "pivot": 613,
+        "s1": 605,
         "atr": 11
       }
     }
