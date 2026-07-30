@@ -1,187 +1,59 @@
 {
-  "timestamp": "2026-07-30T08:01:07.968671+09:00",
+  "timestamp": "2026-07-31T08:01:08.357005+09:00",
   "market_ctx": {
     "nikkei": {
-      "price": 62365.0,
-      "change_pct": -3.95
+      "price": 61434.0,
+      "change_pct": -1.49
     },
     "usdjpy": {
-      "price": 163.36,
-      "change_pct": -0.31
+      "price": 159.57,
+      "change_pct": -2.28
     },
     "sp500": {
-      "price": 7316.0,
-      "change_pct": -1.52
+      "price": 7438.0,
+      "change_pct": 1.66
     },
     "nasdaq": {
-      "price": 24443.0,
-      "change_pct": -1.74
+      "price": 25122.0,
+      "change_pct": 2.78
     },
     "has_major_event": false,
     "event_impact": "NONE",
     "event_summary": "",
-    "market_score": 0,
-    "market_bias": "弱気"
+    "market_score": 20,
+    "market_bias": "中立"
   },
   "candidates": [
     {
-      "code": "7270.T",
-      "name": "スバル",
-      "sector": "自動車",
-      "close": 2848.0,
-      "price_change_pct": 6.29,
-      "volume_ratio": 2.28,
-      "score": 55.0,
-      "indicators": {
-        "volume_ratio": 2.28,
-        "volume_points": 15,
-        "price_change_pct": 6.29,
-        "rsi": 79.1,
-        "macd": 59.6666,
-        "macd_signal": 31.5809,
-        "macd_golden_cross": false,
-        "bb_position": 126.6,
-        "ma5": 2672.0,
-        "ma25": 2524.0,
-        "perfect_order": true
-      },
-      "targets": {
-        "entry": 2857,
-        "target1": 2886,
-        "target2": 2944,
-        "stop": 2828,
-        "rr_ratio": 1.0,
-        "pivot": 2682,
-        "s1": 2656,
-        "atr": 59
-      }
-    },
-    {
-      "code": "8801.T",
-      "name": "三井不動産",
-      "sector": "不動産",
-      "close": 1627.0,
-      "price_change_pct": 1.97,
+      "code": "6861.T",
+      "name": "キーエンス",
+      "sector": "精密機器",
+      "close": 78970.0,
+      "price_change_pct": 1.78,
       "volume_ratio": 1.69,
-      "score": 53.0,
+      "score": 63.0,
       "indicators": {
         "volume_ratio": 1.69,
         "volume_points": 10,
-        "price_change_pct": 1.97,
-        "rsi": 67.7,
-        "macd": 22.8544,
-        "macd_signal": 16.2214,
+        "price_change_pct": 1.78,
+        "rsi": 56.7,
+        "macd": -674.1651,
+        "macd_signal": -1085.506,
         "macd_golden_cross": false,
-        "bb_position": 109.0,
-        "ma5": 1582.0,
-        "ma25": 1537.0,
-        "perfect_order": true
+        "bb_position": 76.6,
+        "ma5": 74700.0,
+        "ma25": 76236.0,
+        "perfect_order": false
       },
       "targets": {
-        "entry": 1632,
-        "target1": 1648,
-        "target2": 1681,
-        "stop": 1616,
-        "rr_ratio": 1.0,
-        "pivot": 1590,
-        "s1": 1580,
-        "atr": 33
-      }
-    },
-    {
-      "code": "1925.T",
-      "name": "大和ハウス工業",
-      "sector": "建設",
-      "close": 4909.0,
-      "price_change_pct": 3.02,
-      "volume_ratio": 1.51,
-      "score": 50.0,
-      "indicators": {
-        "volume_ratio": 1.51,
-        "volume_points": 10,
-        "price_change_pct": 3.02,
-        "rsi": 79.2,
-        "macd": 98.0704,
-        "macd_signal": 75.7786,
-        "macd_golden_cross": false,
-        "bb_position": 121.1,
-        "ma5": 4712.0,
-        "ma25": 4550.0,
-        "perfect_order": true
-      },
-      "targets": {
-        "entry": 4924,
-        "target1": 4973,
-        "target2": 5072,
-        "stop": 4880,
-        "rr_ratio": 1.11,
-        "pivot": 4758,
-        "s1": 4730,
-        "atr": 87
-      }
-    },
-    {
-      "code": "5401.T",
-      "name": "日本製鉄",
-      "sector": "鉄鋼",
-      "close": 673.0,
-      "price_change_pct": 2.87,
-      "volume_ratio": 2.48,
-      "score": 47.0,
-      "indicators": {
-        "volume_ratio": 2.48,
-        "volume_points": 15,
-        "price_change_pct": 2.87,
-        "rsi": 95.5,
-        "macd": 25.278,
-        "macd_signal": 15.1875,
-        "macd_golden_cross": false,
-        "bb_position": 108.2,
-        "ma5": 638.0,
-        "ma25": 575.0,
-        "perfect_order": true
-      },
-      "targets": {
-        "entry": 675,
-        "target1": 682,
-        "target2": 696,
-        "stop": 668,
-        "rr_ratio": 1.0,
-        "pivot": 651,
-        "s1": 644,
-        "atr": 13
-      }
-    },
-    {
-      "code": "8001.T",
-      "name": "伊藤忠商事",
-      "sector": "商社",
-      "close": 2043.0,
-      "price_change_pct": 2.23,
-      "volume_ratio": 1.43,
-      "score": 47.0,
-      "indicators": {
-        "volume_ratio": 1.43,
-        "volume_points": 10,
-        "price_change_pct": 2.23,
-        "rsi": 78.7,
-        "macd": 36.6998,
-        "macd_signal": 25.1311,
-        "macd_golden_cross": false,
-        "bb_position": 110.4,
-        "ma5": 1991.0,
-        "ma25": 1906.0,
-        "perfect_order": true
-      },
-      "targets": {
-        "entry": 2049,
-        "target1": 2069,
-        "target2": 2110,
-        "stop": 2029,
-        "rr_ratio": 1.0,
-        "pivot": 1984,
-        "s1": 1968,
-        "atr": 39
+        "entry": 79207,
+        "target1": 81013,
+        "target2": 84437,
+        "stop": 77677,
+        "rr_ratio": 1.18,
+        "pivot": 78467,
+        "s1": 75043,
+        "atr": 3059
       }
     }
   ]
