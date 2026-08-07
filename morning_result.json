@@ -1,60 +1,27 @@
 {
-  "timestamp": "2026-08-07T08:01:15.123605+09:00",
+  "timestamp": "2026-08-08T08:01:06.786518+09:00",
   "market_ctx": {
     "nikkei": {
-      "price": 66300.0,
-      "change_pct": 3.66
+      "price": 65683.0,
+      "change_pct": -0.93
     },
     "usdjpy": {
-      "price": 158.46,
-      "change_pct": 0.55
+      "price": 157.74,
+      "change_pct": 0.09
     },
     "sp500": {
-      "price": 7710.0,
-      "change_pct": -0.18
+      "price": 7758.0,
+      "change_pct": 0.62
     },
     "nasdaq": {
-      "price": 26348.0,
-      "change_pct": -0.06
+      "price": 26691.0,
+      "change_pct": 1.3
     },
     "has_major_event": false,
     "event_impact": "NONE",
     "event_summary": "",
-    "market_score": 20,
-    "market_bias": "中立"
+    "market_score": 30,
+    "market_bias": "強気"
   },
-  "candidates": [
-    {
-      "code": "7270.T",
-      "name": "スバル",
-      "sector": "自動車",
-      "close": 2515.0,
-      "price_change_pct": 1.6,
-      "volume_ratio": 1.89,
-      "score": 49.0,
-      "indicators": {
-        "volume_ratio": 1.89,
-        "volume_points": 15,
-        "price_change_pct": 1.6,
-        "rsi": 49.8,
-        "macd": 24.1428,
-        "macd_signal": 42.2678,
-        "macd_golden_cross": false,
-        "bb_position": 33.5,
-        "ma5": 2582.0,
-        "ma25": 2579.0,
-        "perfect_order": true
-      },
-      "targets": {
-        "entry": 2523,
-        "target1": 2605,
-        "target2": 2734,
-        "stop": 2475,
-        "rr_ratio": 1.71,
-        "pivot": 2524,
-        "s1": 2395,
-        "atr": 95
-      }
-    }
-  ]
+  "candidates": []
 }
