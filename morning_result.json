@@ -1,13 +1,13 @@
 {
-  "timestamp": "2026-09-05T08:01:51.313702+09:00",
+  "timestamp": "2026-09-08T08:01:10.192436+09:00",
   "market_ctx": {
     "nikkei": {
-      "price": 64214.0,
-      "change_pct": -0.17
+      "price": 65021.0,
+      "change_pct": 1.26
     },
     "usdjpy": {
-      "price": 156.22,
-      "change_pct": -1.7
+      "price": 154.13,
+      "change_pct": -1.32
     },
     "sp500": {
       "price": 7719.0,
@@ -20,8 +20,41 @@
     "has_major_event": false,
     "event_impact": "NONE",
     "event_summary": "",
-    "market_score": 0,
+    "market_score": 10,
     "market_bias": "弱気"
   },
-  "candidates": []
+  "candidates": [
+    {
+      "code": "4507.T",
+      "name": "塩野義製薬",
+      "sector": "医薬品",
+      "close": 2943.0,
+      "price_change_pct": 1.17,
+      "volume_ratio": 1.42,
+      "score": 63.0,
+      "indicators": {
+        "volume_ratio": 1.42,
+        "volume_points": 10,
+        "price_change_pct": 1.17,
+        "rsi": 65.6,
+        "macd": 24.2901,
+        "macd_signal": 19.6894,
+        "macd_golden_cross": false,
+        "bb_position": 71.0,
+        "ma5": 2955.0,
+        "ma25": 2880.0,
+        "perfect_order": true
+      },
+      "targets": {
+        "entry": 2952,
+        "target1": 2982,
+        "target2": 2991,
+        "stop": 2922,
+        "rr_ratio": 1.0,
+        "pivot": 2927,
+        "s1": 2886,
+        "atr": 60
+      }
+    }
+  ]
 }
