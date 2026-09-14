@@ -1,60 +1,27 @@
 {
-  "timestamp": "2026-09-12T08:01:19.373763+09:00",
+  "timestamp": "2026-09-15T08:01:25.951723+09:00",
   "market_ctx": {
     "nikkei": {
-      "price": 65271.0,
-      "change_pct": 0.2
+      "price": 64011.0,
+      "change_pct": -1.93
     },
     "usdjpy": {
-      "price": 153.55,
-      "change_pct": -0.01
+      "price": 154.24,
+      "change_pct": 0.53
     },
     "sp500": {
-      "price": 7657.0,
-      "change_pct": 0.86
+      "price": 7620.0,
+      "change_pct": -0.48
     },
     "nasdaq": {
-      "price": 26333.0,
-      "change_pct": 0.96
+      "price": 26186.0,
+      "change_pct": -0.56
     },
     "has_major_event": false,
     "event_impact": "NONE",
     "event_summary": "",
-    "market_score": 30,
-    "market_bias": "強気"
+    "market_score": 10,
+    "market_bias": "弱気"
   },
-  "candidates": [
-    {
-      "code": "9433.T",
-      "name": "KDDI",
-      "sector": "通信",
-      "close": 3031.0,
-      "price_change_pct": 0.76,
-      "volume_ratio": 1.42,
-      "score": 54.0,
-      "indicators": {
-        "volume_ratio": 1.42,
-        "volume_points": 10,
-        "price_change_pct": 0.76,
-        "rsi": 73.2,
-        "macd": 31.922,
-        "macd_signal": 23.5086,
-        "macd_golden_cross": false,
-        "bb_position": 89.3,
-        "ma5": 2993.0,
-        "ma25": 2921.0,
-        "perfect_order": true
-      },
-      "targets": {
-        "entry": 3040,
-        "target1": 3070,
-        "target2": 3131,
-        "stop": 3016,
-        "rr_ratio": 1.25,
-        "pivot": 2987,
-        "s1": 2965,
-        "atr": 48
-      }
-    }
-  ]
+  "candidates": []
 }
