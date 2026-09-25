@@ -1,21 +1,21 @@
 {
-  "timestamp": "2026-09-25T08:01:19.052430+09:00",
+  "timestamp": "2026-09-26T08:01:17.592048+09:00",
   "market_ctx": {
     "nikkei": {
-      "price": 65019.0,
-      "change_pct": 1.38
+      "price": 65514.0,
+      "change_pct": 0.76
     },
     "usdjpy": {
-      "price": 158.75,
-      "change_pct": 0.3
+      "price": 157.18,
+      "change_pct": -0.68
     },
     "sp500": {
-      "price": 7704.0,
-      "change_pct": -0.02
+      "price": 7743.0,
+      "change_pct": 0.51
     },
     "nasdaq": {
-      "price": 26939.0,
-      "change_pct": 0.01
+      "price": 27069.0,
+      "change_pct": 0.48
     },
     "has_major_event": false,
     "event_impact": "NONE",
@@ -23,38 +23,5 @@
     "market_score": 30,
     "market_bias": "強気"
   },
-  "candidates": [
-    {
-      "code": "4063.T",
-      "name": "信越化学工業",
-      "sector": "化学",
-      "close": 5903.0,
-      "price_change_pct": 1.01,
-      "volume_ratio": 1.45,
-      "score": 61.0,
-      "indicators": {
-        "volume_ratio": 1.45,
-        "volume_points": 10,
-        "price_change_pct": 1.01,
-        "rsi": 46.0,
-        "macd": -68.414,
-        "macd_signal": -83.2669,
-        "macd_golden_cross": false,
-        "bb_position": 62.1,
-        "ma5": 5804.0,
-        "ma25": 5903.0,
-        "perfect_order": false
-      },
-      "targets": {
-        "entry": 5921,
-        "target1": 5980,
-        "target2": 6100,
-        "stop": 5868,
-        "rr_ratio": 1.11,
-        "pivot": 5821,
-        "s1": 5784,
-        "atr": 105
-      }
-    }
-  ]
+  "candidates": []
 }
