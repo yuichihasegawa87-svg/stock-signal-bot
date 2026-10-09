@@ -1,59 +1,59 @@
 {
-  "timestamp": "2026-10-09T08:01:14.264179+09:00",
+  "timestamp": "2026-10-10T08:01:17.757799+09:00",
   "market_ctx": {
     "nikkei": {
-      "price": 70036.0,
-      "change_pct": -0.92
+      "price": 69042.0,
+      "change_pct": -1.42
     },
     "usdjpy": {
-      "price": 157.91,
-      "change_pct": -0.09
+      "price": 158.25,
+      "change_pct": 0.12
     },
     "sp500": {
-      "price": 7765.0,
-      "change_pct": -0.47
+      "price": 7812.0,
+      "change_pct": 0.59
     },
     "nasdaq": {
-      "price": 27193.0,
-      "change_pct": -1.25
+      "price": 27366.0,
+      "change_pct": 0.64
     },
     "has_major_event": false,
     "event_impact": "NONE",
     "event_summary": "",
-    "market_score": 0,
-    "market_bias": "弱気"
+    "market_score": 30,
+    "market_bias": "強気"
   },
   "candidates": [
     {
-      "code": "7267.T",
-      "name": "ホンダ",
-      "sector": "自動車",
-      "close": 1712.0,
-      "price_change_pct": 1.72,
-      "volume_ratio": 1.31,
-      "score": 53.0,
+      "code": "2914.T",
+      "name": "日本たばこ産業",
+      "sector": "食品",
+      "close": 7230.0,
+      "price_change_pct": 3.88,
+      "volume_ratio": 2.19,
+      "score": 70.0,
       "indicators": {
-        "volume_ratio": 1.31,
-        "volume_points": 10,
-        "price_change_pct": 1.72,
-        "rsi": 64.7,
-        "macd": 10.5385,
-        "macd_signal": 6.9325,
+        "volume_ratio": 2.19,
+        "volume_points": 15,
+        "price_change_pct": 3.88,
+        "rsi": 70.7,
+        "macd": 38.8109,
+        "macd_signal": 3.14,
         "macd_golden_cross": false,
-        "bb_position": 84.3,
-        "ma5": 1685.0,
-        "ma25": 1663.0,
+        "bb_position": 114.8,
+        "ma5": 7009.0,
+        "ma25": 6858.0,
         "perfect_order": true
       },
       "targets": {
-        "entry": 1717,
-        "target1": 1734,
-        "target2": 1769,
-        "stop": 1700,
-        "rr_ratio": 1.0,
-        "pivot": 1682,
-        "s1": 1668,
-        "atr": 34
+        "entry": 7252,
+        "target1": 7325,
+        "target2": 7472,
+        "stop": 7186,
+        "rr_ratio": 1.11,
+        "pivot": 6950,
+        "s1": 6902,
+        "atr": 131
       }
     }
   ]
