@@ -1,60 +1,27 @@
 {
-  "timestamp": "2026-10-13T08:01:19.421107+09:00",
+  "timestamp": "2026-10-14T08:01:27.563653+09:00",
   "market_ctx": {
     "nikkei": {
       "price": 69031.0,
       "change_pct": -0.02
     },
     "usdjpy": {
-      "price": 158.63,
-      "change_pct": 0.36
+      "price": 158.35,
+      "change_pct": -0.11
     },
     "sp500": {
-      "price": 7807.0,
-      "change_pct": -0.06
+      "price": 7805.0,
+      "change_pct": -0.02
     },
     "nasdaq": {
-      "price": 27246.0,
-      "change_pct": -0.44
+      "price": 27204.0,
+      "change_pct": -0.15
     },
     "has_major_event": false,
     "event_impact": "NONE",
     "event_summary": "",
-    "market_score": 10,
+    "market_score": 0,
     "market_bias": "弱気"
   },
-  "candidates": [
-    {
-      "code": "2914.T",
-      "name": "日本たばこ産業",
-      "sector": "食品",
-      "close": 7230.0,
-      "price_change_pct": 3.88,
-      "volume_ratio": 2.19,
-      "score": 60.0,
-      "indicators": {
-        "volume_ratio": 2.19,
-        "volume_points": 15,
-        "price_change_pct": 3.88,
-        "rsi": 70.7,
-        "macd": 38.8109,
-        "macd_signal": 3.14,
-        "macd_golden_cross": false,
-        "bb_position": 114.8,
-        "ma5": 7009.0,
-        "ma25": 6858.0,
-        "perfect_order": true
-      },
-      "targets": {
-        "entry": 7252,
-        "target1": 7325,
-        "target2": 7472,
-        "stop": 7186,
-        "rr_ratio": 1.11,
-        "pivot": 6950,
-        "s1": 6902,
-        "atr": 131
-      }
-    }
-  ]
+  "candidates": []
 }
