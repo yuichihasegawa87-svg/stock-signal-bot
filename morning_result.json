@@ -1,187 +1,59 @@
 {
-  "timestamp": "2026-10-16T08:01:23.219760+09:00",
+  "timestamp": "2026-10-17T08:01:43.021884+09:00",
   "market_ctx": {
     "nikkei": {
-      "price": 67744.0,
-      "change_pct": -0.05
+      "price": 64426.0,
+      "change_pct": -4.9
     },
     "usdjpy": {
-      "price": 158.08,
-      "change_pct": 0.08
+      "price": 157.99,
+      "change_pct": 0.02
     },
     "sp500": {
-      "price": 7744.0,
-      "change_pct": 0.33
+      "price": 7659.0,
+      "change_pct": -1.09
     },
     "nasdaq": {
-      "price": 26713.0,
-      "change_pct": 0.08
+      "price": 26140.0,
+      "change_pct": -2.15
     },
     "has_major_event": false,
     "event_impact": "NONE",
     "event_summary": "",
-    "market_score": 30,
-    "market_bias": "強気"
+    "market_score": 10,
+    "market_bias": "弱気"
   },
   "candidates": [
     {
-      "code": "4502.T",
-      "name": "武田薬品工業",
-      "sector": "医薬品",
-      "close": 6183.0,
-      "price_change_pct": 4.99,
-      "volume_ratio": 2.26,
-      "score": 80.0,
-      "indicators": {
-        "volume_ratio": 2.26,
-        "volume_points": 15,
-        "price_change_pct": 4.99,
-        "rsi": 68.4,
-        "macd": 81.1023,
-        "macd_signal": 50.9994,
-        "macd_golden_cross": false,
-        "bb_position": 126.7,
-        "ma5": 5939.0,
-        "ma25": 5761.0,
-        "perfect_order": true
-      },
-      "targets": {
-        "entry": 6202,
-        "target1": 6264,
-        "target2": 6389,
-        "stop": 6141,
-        "rr_ratio": 1.02,
-        "pivot": 5882,
-        "s1": 5831,
-        "atr": 121
-      }
-    },
-    {
-      "code": "8801.T",
-      "name": "三井不動産",
-      "sector": "不動産",
-      "close": 1470.0,
-      "price_change_pct": 2.8,
-      "volume_ratio": 1.34,
-      "score": 70.0,
-      "indicators": {
-        "volume_ratio": 1.34,
-        "volume_points": 10,
-        "price_change_pct": 2.8,
-        "rsi": 46.9,
-        "macd": -7.8886,
-        "macd_signal": -8.004,
-        "macd_golden_cross": true,
-        "bb_position": 65.9,
-        "ma5": 1442.0,
-        "ma25": 1459.0,
-        "perfect_order": false
-      },
-      "targets": {
-        "entry": 1474,
-        "target1": 1489,
-        "target2": 1519,
-        "stop": 1460,
-        "rr_ratio": 1.07,
-        "pivot": 1429,
-        "s1": 1420,
-        "atr": 29
-      }
-    },
-    {
-      "code": "1925.T",
-      "name": "大和ハウス工業",
-      "sector": "建設",
-      "close": 2203.0,
-      "price_change_pct": 0.8,
-      "volume_ratio": 1.53,
-      "score": 64.0,
-      "indicators": {
-        "volume_ratio": 1.53,
-        "volume_points": 10,
-        "price_change_pct": 0.8,
-        "rsi": 56.2,
-        "macd": -10.6477,
-        "macd_signal": -14.7592,
-        "macd_golden_cross": false,
-        "bb_position": 71.1,
-        "ma5": 2181.0,
-        "ma25": 2190.0,
-        "perfect_order": false
-      },
-      "targets": {
-        "entry": 2210,
-        "target1": 2232,
-        "target2": 2277,
-        "stop": 2195,
-        "rr_ratio": 1.47,
-        "pivot": 2184,
-        "s1": 2172,
-        "atr": 30
-      }
-    },
-    {
-      "code": "7270.T",
-      "name": "スバル",
-      "sector": "自動車",
-      "close": 2604.0,
-      "price_change_pct": 0.62,
-      "volume_ratio": 1.54,
-      "score": 64.0,
-      "indicators": {
-        "volume_ratio": 1.54,
-        "volume_points": 10,
-        "price_change_pct": 0.62,
-        "rsi": 55.5,
-        "macd": 5.6286,
-        "macd_signal": 0.1442,
-        "macd_golden_cross": false,
-        "bb_position": 81.0,
-        "ma5": 2573.0,
-        "ma25": 2555.0,
-        "perfect_order": true
-      },
-      "targets": {
-        "entry": 2612,
-        "target1": 2638,
-        "target2": 2691,
-        "stop": 2590,
-        "rr_ratio": 1.18,
-        "pivot": 2587,
-        "s1": 2566,
-        "atr": 45
-      }
-    },
-    {
-      "code": "2914.T",
-      "name": "日本たばこ産業",
-      "sector": "食品",
-      "close": 7500.0,
-      "price_change_pct": 2.25,
+      "code": "9022.T",
+      "name": "東海旅客鉄道",
+      "sector": "鉄道",
+      "close": 3787.0,
+      "price_change_pct": 2.32,
       "volume_ratio": 1.6,
       "score": 62.0,
       "indicators": {
         "volume_ratio": 1.6,
         "volume_points": 10,
-        "price_change_pct": 2.25,
-        "rsi": 76.5,
-        "macd": 111.2704,
-        "macd_signal": 42.3563,
+        "price_change_pct": 2.32,
+        "rsi": 52.6,
+        "macd": -34.6309,
+        "macd_signal": -48.5091,
         "macd_golden_cross": false,
-        "bb_position": 113.8,
-        "ma5": 7269.0,
-        "ma25": 6914.0,
-        "perfect_order": true
+        "bb_position": 77.4,
+        "ma5": 3687.0,
+        "ma25": 3726.0,
+        "perfect_order": false
       },
       "targets": {
-        "entry": 7522,
-        "target1": 7597,
-        "target2": 7749,
-        "stop": 7454,
-        "rr_ratio": 1.1,
-        "pivot": 7301,
-        "s1": 7260,
-        "atr": 136
+        "entry": 3798,
+        "target1": 3836,
+        "target2": 3913,
+        "stop": 3763,
+        "rr_ratio": 1.09,
+        "pivot": 3679,
+        "s1": 3657,
+        "atr": 71
       }
     }
   ]
