@@ -1,60 +1,27 @@
 {
-  "timestamp": "2026-10-17T08:01:43.021884+09:00",
+  "timestamp": "2026-10-20T08:01:21.902334+09:00",
   "market_ctx": {
     "nikkei": {
-      "price": 64426.0,
-      "change_pct": -4.9
+      "price": 65324.0,
+      "change_pct": 1.39
     },
     "usdjpy": {
-      "price": 157.99,
-      "change_pct": 0.02
+      "price": 158.51,
+      "change_pct": 0.44
     },
     "sp500": {
-      "price": 7659.0,
-      "change_pct": -1.09
+      "price": 7691.0,
+      "change_pct": 0.41
     },
     "nasdaq": {
-      "price": 26140.0,
-      "change_pct": -2.15
+      "price": 26431.0,
+      "change_pct": 1.11
     },
     "has_major_event": false,
     "event_impact": "NONE",
     "event_summary": "",
-    "market_score": 10,
-    "market_bias": "弱気"
+    "market_score": 40,
+    "market_bias": "強気"
   },
-  "candidates": [
-    {
-      "code": "9022.T",
-      "name": "東海旅客鉄道",
-      "sector": "鉄道",
-      "close": 3787.0,
-      "price_change_pct": 2.32,
-      "volume_ratio": 1.6,
-      "score": 62.0,
-      "indicators": {
-        "volume_ratio": 1.6,
-        "volume_points": 10,
-        "price_change_pct": 2.32,
-        "rsi": 52.6,
-        "macd": -34.6309,
-        "macd_signal": -48.5091,
-        "macd_golden_cross": false,
-        "bb_position": 77.4,
-        "ma5": 3687.0,
-        "ma25": 3726.0,
-        "perfect_order": false
-      },
-      "targets": {
-        "entry": 3798,
-        "target1": 3836,
-        "target2": 3913,
-        "stop": 3763,
-        "rr_ratio": 1.09,
-        "pivot": 3679,
-        "s1": 3657,
-        "atr": 71
-      }
-    }
-  ]
+  "candidates": []
 }
