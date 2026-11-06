@@ -1,124 +1,27 @@
 {
-  "timestamp": "2026-11-06T08:01:28.258082+09:00",
+  "timestamp": "2026-11-07T08:01:24.430736+09:00",
   "market_ctx": {
     "nikkei": {
-      "price": 62189.0,
-      "change_pct": -1.42
+      "price": 61078.0,
+      "change_pct": -1.79
     },
     "usdjpy": {
-      "price": 157.63,
-      "change_pct": -0.53
+      "price": 158.43,
+      "change_pct": 0.04
     },
     "sp500": {
-      "price": 7354.0,
-      "change_pct": -4.36
+      "price": 7377.0,
+      "change_pct": 0.31
     },
     "nasdaq": {
-      "price": 24315.0,
-      "change_pct": -5.52
+      "price": 24579.0,
+      "change_pct": 1.09
     },
     "has_major_event": false,
     "event_impact": "NONE",
     "event_summary": "",
-    "market_score": 0,
-    "market_bias": "弱気"
+    "market_score": 30,
+    "market_bias": "強気"
   },
-  "candidates": [
-    {
-      "code": "9433.T",
-      "name": "KDDI",
-      "sector": "通信",
-      "close": 2940.0,
-      "price_change_pct": 4.35,
-      "volume_ratio": 1.32,
-      "score": 60.0,
-      "indicators": {
-        "volume_ratio": 1.32,
-        "volume_points": 10,
-        "price_change_pct": 4.35,
-        "rsi": 55.0,
-        "macd": -21.0927,
-        "macd_signal": -23.9415,
-        "macd_golden_cross": true,
-        "bb_position": 84.4,
-        "ma5": 2842.0,
-        "ma25": 2882.0,
-        "perfect_order": false
-      },
-      "targets": {
-        "entry": 2949,
-        "target1": 2978,
-        "target2": 3038,
-        "stop": 2920,
-        "rr_ratio": 1.0,
-        "pivot": 2832,
-        "s1": 2799,
-        "atr": 58
-      }
-    },
-    {
-      "code": "1925.T",
-      "name": "大和ハウス工業",
-      "sector": "建設",
-      "close": 2391.0,
-      "price_change_pct": 3.8,
-      "volume_ratio": 1.74,
-      "score": 50.0,
-      "indicators": {
-        "volume_ratio": 1.74,
-        "volume_points": 10,
-        "price_change_pct": 3.8,
-        "rsi": 71.1,
-        "macd": 30.7322,
-        "macd_signal": 20.1846,
-        "macd_golden_cross": false,
-        "bb_position": 103.9,
-        "ma5": 2301.0,
-        "ma25": 2235.0,
-        "perfect_order": true
-      },
-      "targets": {
-        "entry": 2398,
-        "target1": 2422,
-        "target2": 2470,
-        "stop": 2374,
-        "rr_ratio": 1.0,
-        "pivot": 2304,
-        "s1": 2287,
-        "atr": 48
-      }
-    },
-    {
-      "code": "6367.T",
-      "name": "ダイキン工業",
-      "sector": "機械",
-      "close": 21465.0,
-      "price_change_pct": 2.7,
-      "volume_ratio": 1.77,
-      "score": 47.0,
-      "indicators": {
-        "volume_ratio": 1.77,
-        "volume_points": 10,
-        "price_change_pct": 2.7,
-        "rsi": 53.9,
-        "macd": 102.4082,
-        "macd_signal": 151.3728,
-        "macd_golden_cross": false,
-        "bb_position": 71.9,
-        "ma5": 21114.0,
-        "ma25": 21183.0,
-        "perfect_order": false
-      },
-      "targets": {
-        "entry": 21529,
-        "target1": 21744,
-        "target2": 22179,
-        "stop": 21364,
-        "rr_ratio": 1.3,
-        "pivot": 20932,
-        "s1": 20618,
-        "atr": 330
-      }
-    }
-  ]
+  "candidates": []
 }
