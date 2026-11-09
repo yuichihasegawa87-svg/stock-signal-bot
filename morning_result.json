@@ -1,21 +1,21 @@
 {
-  "timestamp": "2026-11-07T08:01:24.430736+09:00",
+  "timestamp": "2026-11-10T08:01:21.563317+09:00",
   "market_ctx": {
     "nikkei": {
-      "price": 61078.0,
-      "change_pct": -1.79
+      "price": 57435.0,
+      "change_pct": -5.96
     },
     "usdjpy": {
-      "price": 158.43,
-      "change_pct": 0.04
+      "price": 157.9,
+      "change_pct": 0.26
     },
     "sp500": {
-      "price": 7377.0,
-      "change_pct": 0.31
+      "price": 7550.0,
+      "change_pct": 2.35
     },
     "nasdaq": {
-      "price": 24579.0,
-      "change_pct": 1.09
+      "price": 25253.0,
+      "change_pct": 2.74
     },
     "has_major_event": false,
     "event_impact": "NONE",
@@ -23,5 +23,70 @@
     "market_score": 30,
     "market_bias": "強気"
   },
-  "candidates": []
+  "candidates": [
+    {
+      "code": "6367.T",
+      "name": "ダイキン工業",
+      "sector": "機械",
+      "close": 22445.0,
+      "price_change_pct": 3.01,
+      "volume_ratio": 1.4,
+      "score": 80.0,
+      "indicators": {
+        "volume_ratio": 1.4,
+        "volume_points": 10,
+        "price_change_pct": 3.01,
+        "rsi": 67.8,
+        "macd": 223.3112,
+        "macd_signal": 167.3125,
+        "macd_golden_cross": true,
+        "bb_position": 130.0,
+        "ma5": 21521.0,
+        "ma25": 21276.0,
+        "perfect_order": true
+      },
+      "targets": {
+        "entry": 22512,
+        "target1": 22763,
+        "target2": 23737,
+        "stop": 22283,
+        "rr_ratio": 1.1,
+        "pivot": 22107,
+        "s1": 21133,
+        "atr": 458
+      }
+    },
+    {
+      "code": "5401.T",
+      "name": "日本製鉄",
+      "sector": "鉄鋼",
+      "close": 675.0,
+      "price_change_pct": 2.8,
+      "volume_ratio": 1.35,
+      "score": 72.0,
+      "indicators": {
+        "volume_ratio": 1.35,
+        "volume_points": 10,
+        "price_change_pct": 2.8,
+        "rsi": 63.4,
+        "macd": 2.1038,
+        "macd_signal": 0.3755,
+        "macd_golden_cross": false,
+        "bb_position": 94.8,
+        "ma5": 663.0,
+        "ma25": 653.0,
+        "perfect_order": true
+      },
+      "targets": {
+        "entry": 677,
+        "target1": 684,
+        "target2": 698,
+        "stop": 670,
+        "rr_ratio": 1.0,
+        "pivot": 661,
+        "s1": 648,
+        "atr": 13
+      }
+    }
+  ]
 }
