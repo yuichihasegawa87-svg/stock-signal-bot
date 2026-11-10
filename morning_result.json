@@ -1,90 +1,58 @@
 {
-  "timestamp": "2026-11-10T08:01:21.563317+09:00",
+  "timestamp": "2026-11-11T08:01:28.966396+09:00",
   "market_ctx": {
     "nikkei": {
-      "price": 57435.0,
-      "change_pct": -5.96
+      "price": 58776.0,
+      "change_pct": 2.33
     },
     "usdjpy": {
-      "price": 157.9,
+      "price": 158.71,
       "change_pct": 0.26
     },
     "sp500": {
-      "price": 7550.0,
-      "change_pct": 2.35
+      "price": 7521.0,
+      "change_pct": -0.38
     },
     "nasdaq": {
-      "price": 25253.0,
-      "change_pct": 2.74
+      "price": 25066.0,
+      "change_pct": -0.74
     },
     "has_major_event": false,
     "event_impact": "NONE",
     "event_summary": "",
-    "market_score": 30,
-    "market_bias": "強気"
+    "market_score": 20,
+    "market_bias": "中立"
   },
   "candidates": [
-    {
-      "code": "6367.T",
-      "name": "ダイキン工業",
-      "sector": "機械",
-      "close": 22445.0,
-      "price_change_pct": 3.01,
-      "volume_ratio": 1.4,
-      "score": 80.0,
-      "indicators": {
-        "volume_ratio": 1.4,
-        "volume_points": 10,
-        "price_change_pct": 3.01,
-        "rsi": 67.8,
-        "macd": 223.3112,
-        "macd_signal": 167.3125,
-        "macd_golden_cross": true,
-        "bb_position": 130.0,
-        "ma5": 21521.0,
-        "ma25": 21276.0,
-        "perfect_order": true
-      },
-      "targets": {
-        "entry": 22512,
-        "target1": 22763,
-        "target2": 23737,
-        "stop": 22283,
-        "rr_ratio": 1.1,
-        "pivot": 22107,
-        "s1": 21133,
-        "atr": 458
-      }
-    },
     {
       "code": "5401.T",
       "name": "日本製鉄",
       "sector": "鉄鋼",
-      "close": 675.0,
-      "price_change_pct": 2.8,
-      "volume_ratio": 1.35,
-      "score": 72.0,
+      "close": 688.0,
+      "price_change_pct": 1.93,
+      "volume_ratio": 1.54,
+      "score": 63.0,
       "indicators": {
-        "volume_ratio": 1.35,
+        "volume_ratio": 1.54,
         "volume_points": 10,
-        "price_change_pct": 2.8,
-        "rsi": 63.4,
-        "macd": 2.1038,
-        "macd_signal": 0.3755,
+        "price_change_pct": 1.93,
+        "rsi": 63.6,
+        "macd": 4.1819,
+        "macd_signal": 1.2437,
         "macd_golden_cross": false,
-        "bb_position": 94.8,
-        "ma5": 663.0,
-        "ma25": 653.0,
+        "bb_position": 117.0,
+        "ma5": 669.0,
+        "ma25": 655.0,
         "perfect_order": true
       },
       "targets": {
-        "entry": 677,
-        "target1": 684,
-        "target2": 698,
-        "stop": 670,
+        "entry": 690,
+        "target1": 697,
+        "target2": 711,
+        "stop": 683,
         "rr_ratio": 1.0,
-        "pivot": 661,
-        "s1": 648,
+        "pivot": 671,
+        "s1": 665,
         "atr": 13
       }
     }
