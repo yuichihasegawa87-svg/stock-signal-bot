@@ -1,60 +1,27 @@
 {
-  "timestamp": "2026-11-11T08:01:28.966396+09:00",
+  "timestamp": "2026-11-12T08:01:19.423357+09:00",
   "market_ctx": {
     "nikkei": {
-      "price": 58776.0,
-      "change_pct": 2.33
+      "price": 60460.0,
+      "change_pct": 2.87
     },
     "usdjpy": {
-      "price": 158.71,
-      "change_pct": 0.26
+      "price": 159.67,
+      "change_pct": 1.07
     },
     "sp500": {
-      "price": 7521.0,
-      "change_pct": -0.38
+      "price": 7619.0,
+      "change_pct": 1.31
     },
     "nasdaq": {
-      "price": 25066.0,
-      "change_pct": -0.74
+      "price": 25466.0,
+      "change_pct": 1.6
     },
     "has_major_event": false,
     "event_impact": "NONE",
     "event_summary": "",
-    "market_score": 20,
-    "market_bias": "中立"
+    "market_score": 40,
+    "market_bias": "強気"
   },
-  "candidates": [
-    {
-      "code": "5401.T",
-      "name": "日本製鉄",
-      "sector": "鉄鋼",
-      "close": 688.0,
-      "price_change_pct": 1.93,
-      "volume_ratio": 1.54,
-      "score": 63.0,
-      "indicators": {
-        "volume_ratio": 1.54,
-        "volume_points": 10,
-        "price_change_pct": 1.93,
-        "rsi": 63.6,
-        "macd": 4.1819,
-        "macd_signal": 1.2437,
-        "macd_golden_cross": false,
-        "bb_position": 117.0,
-        "ma5": 669.0,
-        "ma25": 655.0,
-        "perfect_order": true
-      },
-      "targets": {
-        "entry": 690,
-        "target1": 697,
-        "target2": 711,
-        "stop": 683,
-        "rr_ratio": 1.0,
-        "pivot": 671,
-        "s1": 665,
-        "atr": 13
-      }
-    }
-  ]
+  "candidates": []
 }
